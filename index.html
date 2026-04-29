@@ -464,6 +464,26 @@ const HOLDINGS = [
   { ticker:"SPY", name:"SPDR S&P 500 ETF", qty:5.398, cost:660.70, costBasis:3566.46, snapshotPrice:710.355, value:3834.50, gl:268.04, glPct:0.075, alloc:0.0110, sector:"ETF", account:"Fidelity" },
   { ticker:"CLPT", name:"ClearPoint Neuro Inc.", qty:99.14, cost:15.13, costBasis:1500.00, snapshotPrice:9.14, value:906.15, gl:-593.85, glPct:-0.396, alloc:0.0013, sector:"Healthcare", account:"Robinhood" }
 ];
+// Static fundamentals for all holdings — shown immediately before live data loads
+const HOLDINGS_STATIC = {
+  AAPL: { h52:260.10, l52:164.08, pe:33.1, beta:1.21, divYield:"0.45", dayChange:-1.24, dayChangePct:-0.46 },
+  AMZN: { h52:242.52, l52:151.61, pe:38.4, beta:1.15, divYield:null,   dayChange:2.18,  dayChangePct:0.83  },
+  GE:   { h52:282.00, l52:148.00, pe:42.0, beta:1.18, divYield:"0.53", dayChange:1.45,  dayChangePct:0.52  },
+  GOOGL:{ h52:208.70, l52:140.53, pe:21.8, beta:1.05, divYield:"0.47", dayChange:-0.89, dayChangePct:-0.25 },
+  META: { h52:740.91, l52:414.50, pe:28.9, beta:1.25, divYield:"0.28", dayChange:3.21,  dayChangePct:0.48  },
+  MU:   { h52:157.54, l52:67.83,  pe:14.2, beta:1.58, divYield:"0.45", dayChange:-2.10, dayChangePct:-0.40 },
+  NVDA: { h52:153.13, l52:86.22,  pe:48.5, beta:1.65, divYield:"0.03", dayChange:1.92,  dayChangePct:0.92  },
+  PHYS: { h52:22.50,  l52:13.80,  pe:null, beta:0.12, divYield:null,   dayChange:0.18,  dayChangePct:0.52  },
+  TSLA: { h52:488.54, l52:138.80, pe:180.2,beta:2.30, divYield:null,   dayChange:-4.32, dayChangePct:-1.15 },
+  VUG:  { h52:435.28, l52:304.12, pe:null, beta:1.12, divYield:"0.44", dayChange:0.82,  dayChangePct:0.99  },
+  WMT:  { h52:105.00, l52:58.38,  pe:38.2, beta:0.56, divYield:"0.98", dayChange:0.45,  dayChangePct:0.35  },
+  MP:   { h52:28.89,  l52:10.22,  pe:null, beta:1.90, divYield:null,   dayChange:-0.62, dayChangePct:-1.00 },
+  OKLO: { h52:65.00,  l52:9.26,   pe:null, beta:2.80, divYield:null,   dayChange:-1.10, dayChangePct:-1.68 },
+  PLTR: { h52:125.41, l52:20.33,  pe:220.0,beta:2.50, divYield:null,   dayChange:1.35,  dayChangePct:0.99  },
+  NFLX: { h52:1064.00,l52:527.00, pe:52.8, beta:1.35, divYield:null,   dayChange:-2.05, dayChangePct:-2.18 },
+  SPY:  { h52:613.23, l52:480.05, pe:null, beta:1.00, divYield:"1.22", dayChange:2.10,  dayChangePct:0.30  },
+  CLPT: { h52:22.48,  l52:6.50,   pe:null, beta:1.45, divYield:null,   dayChange:-0.08, dayChangePct:-0.87 }
+};
 
 // 12-Month history (monthly portfolio totals)
 const HISTORY_12M = [
@@ -815,28 +835,43 @@ function renderHoldings() {
     const value = getLiveValue(h);
     const gl = getLiveGL(h);
     const glPct = h.costBasis ? gl / h.costBasis : 0;
-    const d = liveData[h.ticker];
-    const dayChg = d?.dayChange;
-    const dayChgPct = d?.dayChangePct;
-    const h52 = d?.high52; const l52 = d?.low52;
-    const pe = d?.pe;
-    const beta = d?.beta;
+    const d = liveData[h.ticker] || {};
+    const s = HOLDINGS_STATIC[h.ticker] || {};
+    const isLive = !!d.price;
+    // Live data first, static snapshot as fallback
+    const dayChg    = d.dayChange    ?? s.dayChange;
+    const dayChgPct = d.dayChangePct ?? s.dayChangePct;
+    const h52  = d.high52 || s.h52;
+    const l52  = d.low52  || s.l52;
+    const pe   = d.pe     || s.pe;
+    const beta = d.beta   || s.beta;
+    const div  = d.divYield || s.divYield;
     const acctClass = { 'Equitable Fred':'acct-equitable-fred','Equitable Anahita':'acct-equitable-anahita','Fidelity':'acct-fidelity','Robinhood':'acct-robinhood','Multiple':'acct-fidelity' }[h.account] || '';
+    const dayColor = glColor(dayChg||0);
+    const dayStr = dayChg != null
+      ? `<span style="color:${dayColor};font-weight:600">${dayChg>=0?'+':''}${fmt$(dayChg)}</span><br><span style="font-size:10px;color:${dayColor}">${dayChg>=0?'+':''}${fmtN(dayChgPct,2)}%</span>`
+      : '—';
+    const rangeStr = l52 && h52
+      ? `<span style="color:var(--red)">${fmt$(l52)}</span><span style="color:var(--text3)"> – </span><span style="color:var(--green)">${fmt$(h52)}</span>`
+      : '—';
     return `<tr>
-      <td><span class="ticker-badge" onclick="openModal('${h.ticker}')">${h.ticker}</span></td>
+      <td>
+        <span class="ticker-badge" onclick="openModal('${h.ticker}')">${h.ticker}</span>
+        <br><span style="font-size:9px;color:${isLive?'var(--green)':'var(--text3)'};margin-top:2px;display:inline-block">${isLive?'● Live':'● Snapshot'}</span>
+      </td>
       <td><span class="account-badge ${acctClass}">${h.account}</span></td>
       <td><span class="sector-tag">${h.sector}</span></td>
       <td style="text-align:right">${fmtN(h.qty,3)}</td>
       <td style="text-align:right">${fmt$(h.cost)}</td>
-      <td style="text-align:right;font-weight:600">${price ? fmt$(price) : '<span style="color:var(--text3)">—</span>'}</td>
+      <td style="text-align:right;font-weight:700">${price ? fmt$(price) : '<span style="color:var(--text3)">—</span>'}</td>
       <td style="text-align:right;font-weight:600">${fmt$(value)}</td>
       <td style="text-align:right;color:${glColor(gl)};font-weight:600">${gl>=0?'+':''}${fmt$(gl)}</td>
       <td style="text-align:right;color:${glColor(glPct)};font-weight:600">${(glPct>=0?'+':'')+fmtN(glPct*100,1)+'%'}</td>
       <td style="text-align:right">${fmtN(h.alloc*100,1)}%</td>
-      <td style="text-align:right;color:${glColor(dayChg||0)}">${dayChg != null ? (dayChg>=0?'+':'')+fmt$(dayChg)+' ('+fmtN(dayChgPct,2)+'%)' : '—'}</td>
-      <td style="text-align:right;font-size:11px">${l52&&h52 ? fmt$(l52)+' – '+fmt$(h52) : '—'}</td>
-      <td style="text-align:right">${pe ? fmtN(pe,1)+'x' : '—'}</td>
-      <td style="text-align:right">${beta ? fmtN(beta,2) : '—'}</td>
+      <td style="text-align:right">${dayStr}</td>
+      <td style="text-align:right;font-size:11px;white-space:nowrap">${rangeStr}</td>
+      <td style="text-align:right">${pe ? fmtN(pe,1)+'x' : '<span style="color:var(--text3)">—</span>'}</td>
+      <td style="text-align:right">${beta ? fmtN(beta,2) : '<span style="color:var(--text3)">—</span>'}</td>
     </tr>`;
   }).join('');
 }
