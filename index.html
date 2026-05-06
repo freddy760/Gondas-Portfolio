@@ -605,7 +605,7 @@ let trendChartObj = null, allocChartObj = null, sectorChartObj = null, modalChar
 // LIVE DATA — Rebuilt with reliable multi-source fetch
 // ============================
 const CACHE_KEY = 'gondas_livedata_v11'; // correct qty+price final
-const CACHE_TTL = 4 * 60 * 1000; // 4 min cache
+const CACHE_TTL = 3 * 60 * 1000; // 3 min cache
 
 function saveCache(data) { try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {} }
 function loadCache() { try { const r = JSON.parse(localStorage.getItem(CACHE_KEY)); return r && Date.now()-r.ts < CACHE_TTL ? r : null; } catch { return null; } }
@@ -620,7 +620,10 @@ function chunk(arr, n) { const o=[]; for(let i=0;i<arr.length;i+=n) o.push(arr.s
 
 // FREE Finnhub API key — sign up at finnhub.io for your own (free, 60 req/min)
 // Demo key has very limited rate — get your own free key in 30 seconds
-const FINNHUB_KEY = 'd7tondhr01qlbd3kvadgd7tondhr01qlbd3kvae0'; // Replace with your free key from finnhub.io
+const FINNHUB_KEY = 'd7tondhr01qlbd3kvadgd7tondhr01qlbd3kvae0';
+const FINNHUB_DELAY_MS = 1100;  // 1.1 sec between calls = max ~54 calls/min (safe under 60 limit)
+const MIN_REFRESH_INTERVAL = 3 * 60 * 1000; // minimum 3 min between full refreshes
+let lastFullRefresh = 0; // timestamp of last successful refresh // Replace with your free key from finnhub.io
 
 // Fetch a single quote from Finnhub
 async function fetchFinnhub(ticker) {
@@ -644,20 +647,20 @@ async function fetchFinnhub(ticker) {
   } catch { return null; }
 }
 
-// Batch fetch from Finnhub — one call per ticker, run in parallel
-async function fetchFinnhubBatch(tickers) {
-  const results = await Promise.allSettled(
-    tickers.map(async t => {
-      const data = await fetchFinnhub(t);
-      return { ticker: t, data };
-    })
-  );
+// Batch fetch from Finnhub — sequential with delay to respect rate limits
+// Free tier = 60 calls/min. Sequential with 1.1s delay = ~54/min = safe
+async function fetchFinnhubBatch(tickers, onProgress) {
   const out = {};
-  results.forEach(r => {
-    if (r.status === 'fulfilled' && r.value.data) {
-      out[r.value.ticker] = r.value.data;
+  for (let i = 0; i < tickers.length; i++) {
+    const t = tickers[i];
+    const data = await fetchFinnhub(t);
+    if (data) out[t] = data;
+    if (onProgress) onProgress(i + 1, tickers.length);
+    // Delay between calls to stay under rate limit (skip delay after last call)
+    if (i < tickers.length - 1) {
+      await new Promise(r => setTimeout(r, FINNHUB_DELAY_MS));
     }
-  });
+  }
   return out;
 }
 
@@ -772,12 +775,26 @@ async function fetchNews() {
   return newsItems;
 }
 
-// ── MASTER FETCH — runs all methods, merges best results
-async function fetchAllLiveData() {
+// ── MASTER FETCH — rate-limit aware, smart cooldown
+async function fetchAllLiveData(forceRefresh = false) {
   const btn = document.getElementById('refreshBtn');
   const statusEl = document.getElementById('lastUpdate');
   const barFill = document.getElementById('fetchBarFill');
   const sw = document.getElementById('snapshotWarning');
+
+  // Enforce minimum 3-minute gap between full Finnhub fetches
+  const timeSinceLast = Date.now() - lastFullRefresh;
+  if (!forceRefresh && lastFullRefresh > 0 && timeSinceLast < MIN_REFRESH_INTERVAL) {
+    const waitSec = Math.ceil((MIN_REFRESH_INTERVAL - timeSinceLast) / 1000);
+    const waitMin = Math.floor(waitSec / 60);
+    const waitSecRem = waitSec % 60;
+    statusEl.textContent = `⏳ Rate limit — wait ${waitMin}:${String(waitSecRem).padStart(2,'0')} before next refresh`;
+    statusEl.style.color = 'var(--yellow)';
+    // Flash the button briefly
+    btn.style.opacity = '0.5';
+    setTimeout(() => { btn.style.opacity = '1'; statusEl.style.color = ''; }, 2000);
+    return;
+  }
 
   btn.classList.add('loading');
   btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg> Refreshing…`;
@@ -787,58 +804,52 @@ async function fetchAllLiveData() {
   const holdingTickers = [...new Set(HOLDINGS.map(h => h.ticker))];
   const allTickers = [...new Set([...holdingTickers, ...RESEARCH_PICKS.map(r => r.ticker), ...watchlist])];
 
-  let successCount = 0;
-
-  // ── STEP 1: Try Yahoo Finance batch (fastest, best data)
+  // ── STEP 1: Try Yahoo Finance batch first (instant, no rate limit)
   statusEl.textContent = '⟳ Trying Yahoo Finance…';
   barFill.style.width = '10%';
   const yahooResult = await fetchYahooBatch(allTickers);
-  if (yahooResult) {
+  if (yahooResult && Object.keys(yahooResult).length > 0) {
     Object.assign(liveData, yahooResult);
-    successCount = holdingTickers.filter(t => liveData[t]?.price).length;
     barFill.style.width = '60%';
     renderAll();
   }
 
-  // ── STEP 2: For any still missing, try Finnhub in parallel
+  // ── STEP 2: Use Finnhub for any tickers Yahoo missed (sequential, rate-limit safe)
   const missingAfterYahoo = holdingTickers.filter(t => !liveData[t]?.price);
   if (missingAfterYahoo.length > 0) {
-    statusEl.textContent = `⟳ Fetching ${missingAfterYahoo.length} remaining via Finnhub…`;
-    barFill.style.width = '65%';
-    // Rate limit: Finnhub demo = 1 req/sec. Use small batches with delay
-    const BATCH_SIZE = 5;
-    for (let i = 0; i < missingAfterYahoo.length; i += BATCH_SIZE) {
-      const batch = missingAfterYahoo.slice(i, i + BATCH_SIZE);
-      const finnhubResult = await fetchFinnhubBatch(batch);
-      Object.assign(liveData, finnhubResult);
-      barFill.style.width = (65 + Math.round((i + BATCH_SIZE) / missingAfterYahoo.length * 20)) + '%';
-      renderAll();
-      if (i + BATCH_SIZE < missingAfterYahoo.length) {
-        await new Promise(r => setTimeout(r, 1200)); // rate limit pause
-      }
-    }
+    statusEl.textContent = `⟳ Fetching ${missingAfterYahoo.length} prices via Finnhub…`;
+    barFill.style.width = '15%';
+    const finnhubResult = await fetchFinnhubBatch(missingAfterYahoo, (done, total) => {
+      barFill.style.width = (15 + Math.round(done/total * 65)) + '%';
+      statusEl.textContent = `⟳ Finnhub: ${done}/${total} fetched…`;
+      if (done % 3 === 0) renderAll(); // render every 3 fetches
+    });
+    Object.assign(liveData, finnhubResult);
+    renderAll();
   }
 
-  // ── STEP 3: For anything still missing, try Yahoo chart endpoint individually
+  // ── STEP 3: Yahoo chart for anything still missing
   const stillMissing = holdingTickers.filter(t => !liveData[t]?.price);
   if (stillMissing.length > 0) {
-    statusEl.textContent = `⟳ Trying chart endpoint for ${stillMissing.length} remaining…`;
+    statusEl.textContent = `⟳ Chart fallback for ${stillMissing.length}…`;
     await Promise.allSettled(stillMissing.map(async t => {
       const r = await fetchYahooChart(t);
       if (r) liveData[t] = r;
     }));
-    barFill.style.width = '90%';
     renderAll();
   }
 
-  // ── STEP 4: Last resort — CORS proxy
+  // ── STEP 4: CORS proxy last resort
   const finalMissing = holdingTickers.filter(t => !liveData[t]?.price);
   if (finalMissing.length > 0) {
-    statusEl.textContent = '⟳ Trying CORS proxy…';
     const proxyResult = await fetchYahooProxy(finalMissing);
     if (proxyResult) Object.assign(liveData, proxyResult);
     renderAll();
   }
+
+  // Mark successful refresh time
+  const liveCount = holdingTickers.filter(t => liveData[t]?.price).length;
+  if (liveCount > 0) lastFullRefresh = Date.now();
 
   saveCache(liveData);
   fetchNews().then(news => renderNews(news));
@@ -848,18 +859,16 @@ async function fetchAllLiveData() {
   btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg> Refresh Live`;
   statusEl.style.color = '';
 
-  const liveCount = holdingTickers.filter(t => liveData[t]?.price).length;
   const total = holdingTickers.length;
-
   if (liveCount >= total * 0.8) {
     statusEl.textContent = `✓ Live · ${liveCount}/${total} prices · ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
     if (sw) sw.style.display = 'none';
   } else if (liveCount > 0) {
-    statusEl.textContent = `⚠ Partial · ${liveCount}/${total} live · click Refresh to retry`;
-    if (sw) { sw.style.display='flex'; sw.innerHTML=`⚠️ Only ${liveCount}/${total} prices loaded live. <strong>Get a free Finnhub API key at finnhub.io</strong> and replace 'demo' in the code for reliable prices.`; }
+    statusEl.textContent = `⚠ Partial · ${liveCount}/${total} live · retry in 3 min`;
+    if (sw) { sw.style.display='flex'; sw.innerHTML=`⚠️ Only ${liveCount}/${total} prices loaded. Wait 3 minutes then click Refresh Live again.`; }
   } else {
-    statusEl.textContent = `⚠ Snapshot prices — click Refresh Live to retry`;
-    if (sw) { sw.style.display='flex'; sw.innerHTML='⚠️ <strong>Live prices unavailable.</strong> All APIs blocked. <a href="https://finnhub.io/register" target="_blank" style="color:var(--accent)">Get a free Finnhub API key</a> and update FINNHUB_KEY in the code for reliable live prices.'; }
+    statusEl.textContent = `⚠ Rate limited — wait 3 min then Refresh Live`;
+    if (sw) { sw.style.display='flex'; sw.innerHTML='⚠️ <strong>Finnhub rate limit hit.</strong> Wait 3 minutes and click Refresh Live again. Snapshot prices shown.'; }
   }
   renderAll();
 }
