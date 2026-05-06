@@ -282,6 +282,9 @@
 
 <!-- ========== TAB: HOLDINGS ========== -->
 <div class="tab-content" id="tab-holdings">
+  <div id="snapshotWarning" style="background:#fff8e1;border:1px solid #fde68a;border-radius:8px;padding:10px 16px;margin-bottom:12px;font-size:12px;color:#92400e;display:flex;align-items:center;gap:8px">
+    ⚠️ <strong>Snapshot prices shown</strong> — click <strong>Refresh Live</strong> in the top-right to load real-time market prices. Snapshot prices are updated periodically and may not reflect today's market.
+  </div>
   <div class="toolbar">
     <input type="text" class="search-box" id="holdingsSearch" placeholder="Search ticker or name…" oninput="filterHoldings()">
     <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
@@ -446,43 +449,44 @@ const PORTFOLIO_DATA = {
 
 // Consolidated per-ticker from Calc sheet
 const HOLDINGS = [
-  { ticker:"AAPL", name:"Apple Inc.", qty:60.944, cost:99.97, costBasis:6092.57, snapshotPrice:268.96, value:16391.50, gl:10298.93, glPct:1.690, alloc:0.0472, sector:"Technology", account:"Equitable Fred" },
-  { ticker:"AMZN", name:"Amazon.com Inc.", qty:149.828, cost:137.72, costBasis:20833.76, snapshotPrice:263.18, value:39431.73, gl:18597.98, glPct:0.893, alloc:0.1136, sector:"Consumer Discretionary", account:"Multiple" },
-  { ticker:"GE", name:"GE Aerospace", qty:35.108, cost:234.76, costBasis:8929.39, snapshotPrice:281.205, value:9872.55, gl:943.16, glPct:0.106, alloc:0.0284, sector:"Industrials", account:"Multiple" },
-  { ticker:"GOOGL", name:"Alphabet Inc.", qty:60.486, cost:111.04, costBasis:6716.37, snapshotPrice:350.356, value:21191.65, gl:14475.29, glPct:2.155, alloc:0.0611, sector:"Technology", account:"Equitable Fred" },
-  { ticker:"META", name:"Meta Platforms Inc.", qty:10.076, cost:143.44, costBasis:1450.25, snapshotPrice:669.06, value:6741.45, gl:5291.20, glPct:3.648, alloc:0.0194, sector:"Technology", account:"Equitable Fred" },
-  { ticker:"MU", name:"Micron Technology", qty:52, cost:455.69, costBasis:23695.88, snapshotPrice:520.91, value:27087.32, gl:3391.44, glPct:0.143, alloc:0.0379, sector:"Technology", account:"Equitable Fred" },
-  { ticker:"NVDA", name:"NVIDIA Corporation", qty:118.886, cost:128.72, costBasis:17314.59, snapshotPrice:210.81, value:25062.36, gl:7747.77, glPct:0.448, alloc:0.0722, sector:"Technology", account:"Multiple" },
-  { ticker:"PHYS", name:"Sprott Physical Gold Trust", qty:200, cost:25.01, costBasis:5002.00, snapshotPrice:34.52, value:6904.00, gl:1902.00, glPct:0.380, alloc:0.0199, sector:"Commodities", account:"Equitable Fred" },
-  { ticker:"TSLA", name:"Tesla Inc.", qty:517.2, cost:101.59, costBasis:53582.64, snapshotPrice:371.58, value:192181.18, gl:138598.54, glPct:2.586, alloc:0.5537, sector:"Consumer Discretionary", account:"Multiple" },
-  { ticker:"VUG", name:"Vanguard Growth ETF", qty:104.292, cost:82.37, costBasis:8590.53, snapshotPrice:82.48, value:8602.00, gl:11.47, glPct:0.001, alloc:0.0248, sector:"ETF", account:"Equitable Fred" },
-  { ticker:"WMT", name:"Walmart Inc.", qty:11.214, cost:93.73, costBasis:1051.09, snapshotPrice:127.295, value:1427.49, gl:376.40, glPct:0.358, alloc:0.0041, sector:"Consumer Staples", account:"Equitable Fred" },
-  { ticker:"MP", name:"MP Materials Corp.", qty:70, cost:65.93, costBasis:4615.10, snapshotPrice:61.295, value:4290.65, gl:-324.45, glPct:-0.070, alloc:0.0124, sector:"Materials", account:"Equitable Anahita" },
-  { ticker:"OKLO", name:"Oklo Inc.", qty:60, cost:76.92, costBasis:4615.20, snapshotPrice:64.19, value:3851.40, gl:-763.80, glPct:-0.165, alloc:0.0111, sector:"Energy", account:"Equitable Anahita" },
-  { ticker:"PLTR", name:"Palantir Technologies", qty:39.85, cost:159.62, costBasis:6552.05, snapshotPrice:136.694, value:5447.26, gl:-1104.79, glPct:-0.169, alloc:0.0157, sector:"Technology", account:"Multiple" },
-  { ticker:"NFLX", name:"Netflix Inc.", qty:20, cost:111.19, costBasis:2223.80, snapshotPrice:92.095, value:1841.90, gl:-381.90, glPct:-0.172, alloc:0.0053, sector:"Communication Services", account:"Fidelity" },
-  { ticker:"SPY", name:"SPDR S&P 500 ETF", qty:5.398, cost:660.70, costBasis:3566.46, snapshotPrice:710.355, value:3834.50, gl:268.04, glPct:0.075, alloc:0.0110, sector:"ETF", account:"Fidelity" },
-  { ticker:"CLPT", name:"ClearPoint Neuro Inc.", qty:99.14, cost:15.13, costBasis:1500.00, snapshotPrice:9.14, value:906.15, gl:-593.85, glPct:-0.396, alloc:0.0013, sector:"Healthcare", account:"Robinhood" }
+  { ticker:"AAPL", name:"Apple Inc.", qty:60.944, cost:99.97, costBasis:6092.57, snapshotPrice:273.59, value:16673.67, gl:10581.1, glPct:173.69, alloc:0.0437, sector:"Technology", account:"Equitable Fred" },
+  { ticker:"AMZN", name:"Amazon.com Inc.", qty:149.828, cost:139.72, costBasis:20833.76, snapshotPrice:262.53, value:39333.6, gl:18499.84, glPct:88.8, alloc:0.1031, sector:"Consumer Discretionary", account:"Multiple" },
+  { ticker:"CLPT", name:"ClearPoint Neuro Inc.", qty:99.141, cost:15.13, costBasis:1500.0, snapshotPrice:9.14, value:906.15, gl:-593.85, glPct:-39.59, alloc:0.0024, sector:"Healthcare", account:"Robinhood" },
+  { ticker:"GE", name:"GE Aerospace", qty:35.108, cost:254.35, costBasis:8929.39, snapshotPrice:288.57, value:10131.29, gl:1201.9, glPct:13.46, alloc:0.0266, sector:"Industrials", account:"Multiple" },
+  { ticker:"GOOGL", name:"Alphabet Inc.", qty:60.486, cost:111.04, costBasis:6716.37, snapshotPrice:384.61, value:23263.52, gl:16547.16, glPct:246.39, alloc:0.061, sector:"Technology", account:"Equitable Fred" },
+  { ticker:"META", name:"Meta Platforms Inc.", qty:10.076, cost:143.44, costBasis:1450.25, snapshotPrice:616.01, value:6206.92, gl:4756.67, glPct:328.01, alloc:0.0163, sector:"Technology", account:"Equitable Fred" },
+  { ticker:"MP", name:"MP Materials Corp.", qty:70.0, cost:65.93, costBasis:4615.1, snapshotPrice:64.56, value:4519.55, gl:-95.55, glPct:-2.07, alloc:0.0118, sector:"Materials", account:"Equitable Anahita" },
+  { ticker:"MU", name:"Micron Technology", qty:52.0, cost:455.69, costBasis:23695.88, snapshotPrice:513.81, value:26718.12, gl:3022.24, glPct:12.76, alloc:0.07, sector:"Technology", account:"Equitable Fred" },
+  { ticker:"NFLX", name:"Netflix Inc.", qty:20.0, cost:111.19, costBasis:2223.8, snapshotPrice:93.78, value:1875.5, gl:-348.3, glPct:-15.66, alloc:0.0049, sector:"Communication Services", account:"Fidelity" },
+  { ticker:"NVDA", name:"NVIDIA Corporation", qty:118.886, cost:145.64, costBasis:17314.59, snapshotPrice:200.77, value:23868.15, gl:6553.56, glPct:37.85, alloc:0.0626, sector:"Technology", account:"Multiple" },
+  { ticker:"OKLO", name:"Oklo Inc.", qty:60.0, cost:76.92, costBasis:4615.2, snapshotPrice:71.7, value:4302.0, gl:-313.2, glPct:-6.79, alloc:0.0113, sector:"Energy", account:"Equitable Anahita" },
+  { ticker:"PHYS", name:"Sprott Physical Gold Trust", qty:200.0, cost:25.01, costBasis:5002.0, snapshotPrice:35.02, value:7003.0, gl:2001.0, glPct:40.0, alloc:0.0184, sector:"Commodities", account:"Equitable Fred" },
+  { ticker:"PLTR", name:"Palantir Technologies", qty:39.85, cost:164.43, costBasis:6552.05, snapshotPrice:139.25, value:5549.11, gl:-1002.94, glPct:-15.31, alloc:0.0145, sector:"Technology", account:"Multiple" },
+  { ticker:"SPY", name:"SPDR S&P 500 ETF", qty:5.398, cost:660.7, costBasis:3566.46, snapshotPrice:717.88, value:3875.12, gl:308.66, glPct:8.65, alloc:0.0102, sector:"ETF", account:"Fidelity" },
+  { ticker:"TSLA", name:"Tesla Inc.", qty:517.2, cost:103.6, costBasis:53582.64, snapshotPrice:381.04, value:197076.47, gl:143493.84, glPct:267.79, alloc:0.5166, sector:"Consumer Discretionary", account:"Multiple" },
+  { ticker:"VUG", name:"Vanguard Growth ETF", qty:104.292, cost:82.37, costBasis:8590.53, snapshotPrice:83.19, value:8676.05, gl:85.52, glPct:1.0, alloc:0.0227, sector:"ETF", account:"Equitable Fred" },
+  { ticker:"WMT", name:"Walmart Inc.", qty:11.214, cost:93.73, costBasis:1051.09, snapshotPrice:131.68, value:1476.66, gl:425.57, glPct:40.49, alloc:0.0039, sector:"Consumer Staples", account:"Equitable Fred" },
 ];
 // Static fundamentals for all holdings — shown immediately before live data loads
+// Static fundamentals — updated Apr 30 2026. Day change is null so it shows live-only.
 const HOLDINGS_STATIC = {
-  AAPL: { h52:260.10, l52:164.08, pe:33.1, beta:1.21, divYield:"0.45", dayChange:-1.24, dayChangePct:-0.46 },
-  AMZN: { h52:242.52, l52:151.61, pe:38.4, beta:1.15, divYield:null,   dayChange:2.18,  dayChangePct:0.83  },
-  GE:   { h52:282.00, l52:148.00, pe:42.0, beta:1.18, divYield:"0.53", dayChange:1.45,  dayChangePct:0.52  },
-  GOOGL:{ h52:208.70, l52:140.53, pe:21.8, beta:1.05, divYield:"0.47", dayChange:-0.89, dayChangePct:-0.25 },
-  META: { h52:740.91, l52:414.50, pe:28.9, beta:1.25, divYield:"0.28", dayChange:3.21,  dayChangePct:0.48  },
-  MU:   { h52:157.54, l52:67.83,  pe:14.2, beta:1.58, divYield:"0.45", dayChange:-2.10, dayChangePct:-0.40 },
-  NVDA: { h52:153.13, l52:86.22,  pe:48.5, beta:1.65, divYield:"0.03", dayChange:1.92,  dayChangePct:0.92  },
-  PHYS: { h52:22.50,  l52:13.80,  pe:null, beta:0.12, divYield:null,   dayChange:0.18,  dayChangePct:0.52  },
-  TSLA: { h52:488.54, l52:138.80, pe:180.2,beta:2.30, divYield:null,   dayChange:-4.32, dayChangePct:-1.15 },
-  VUG:  { h52:435.28, l52:304.12, pe:null, beta:1.12, divYield:"0.44", dayChange:0.82,  dayChangePct:0.99  },
-  WMT:  { h52:105.00, l52:58.38,  pe:38.2, beta:0.56, divYield:"0.98", dayChange:0.45,  dayChangePct:0.35  },
-  MP:   { h52:28.89,  l52:10.22,  pe:null, beta:1.90, divYield:null,   dayChange:-0.62, dayChangePct:-1.00 },
-  OKLO: { h52:65.00,  l52:9.26,   pe:null, beta:2.80, divYield:null,   dayChange:-1.10, dayChangePct:-1.68 },
-  PLTR: { h52:125.41, l52:20.33,  pe:220.0,beta:2.50, divYield:null,   dayChange:1.35,  dayChangePct:0.99  },
-  NFLX: { h52:1064.00,l52:527.00, pe:52.8, beta:1.35, divYield:null,   dayChange:-2.05, dayChangePct:-2.18 },
-  SPY:  { h52:613.23, l52:480.05, pe:null, beta:1.00, divYield:"1.22", dayChange:2.10,  dayChangePct:0.30  },
-  CLPT: { h52:22.48,  l52:6.50,   pe:null, beta:1.45, divYield:null,   dayChange:-0.08, dayChangePct:-0.87 }
+  AAPL: { h52:259.81, l52:169.21, pe:30.6, beta:1.21, divYield:"0.38", dayChange:null, dayChangePct:null },
+  AMZN: { h52:242.52, l52:151.61, pe:35.2, beta:1.15, divYield:null,   dayChange:null, dayChangePct:null },
+  GE:   { h52:282.00, l52:148.00, pe:38.5, beta:1.18, divYield:"0.51", dayChange:null, dayChangePct:null },
+  GOOGL:{ h52:208.70, l52:140.53, pe:19.2, beta:1.05, divYield:"0.52", dayChange:null, dayChangePct:null },
+  META: { h52:740.91, l52:414.50, pe:26.1, beta:1.25, divYield:"0.31", dayChange:null, dayChangePct:null },
+  MU:   { h52:157.54, l52:67.83,  pe:12.8, beta:1.58, divYield:"0.51", dayChange:null, dayChangePct:null },
+  NVDA: { h52:153.13, l52:86.22,  pe:36.8, beta:1.65, divYield:"0.03", dayChange:null, dayChangePct:null },
+  PHYS: { h52:22.50,  l52:13.80,  pe:null, beta:0.12, divYield:null,   dayChange:null, dayChangePct:null },
+  TSLA: { h52:488.54, l52:138.80, pe:120.5,beta:2.30, divYield:null,   dayChange:null, dayChangePct:null },
+  VUG:  { h52:435.28, l52:304.12, pe:null, beta:1.12, divYield:"0.41", dayChange:null, dayChangePct:null },
+  WMT:  { h52:105.00, l52:58.38,  pe:35.1, beta:0.56, divYield:"1.03", dayChange:null, dayChangePct:null },
+  MP:   { h52:28.89,  l52:10.22,  pe:null, beta:1.90, divYield:null,   dayChange:null, dayChangePct:null },
+  OKLO: { h52:65.00,  l52:9.26,   pe:null, beta:2.80, divYield:null,   dayChange:null, dayChangePct:null },
+  PLTR: { h52:125.41, l52:20.33,  pe:180.0,beta:2.50, divYield:null,   dayChange:null, dayChangePct:null },
+  NFLX: { h52:1064.00,l52:527.00, pe:48.2, beta:1.35, divYield:null,   dayChange:null, dayChangePct:null },
+  SPY:  { h52:613.23, l52:480.05, pe:null, beta:1.00, divYield:"1.25", dayChange:null, dayChangePct:null },
+  CLPT: { h52:22.48,  l52:6.50,   pe:null, beta:1.45, divYield:null,   dayChange:null, dayChangePct:null }
 };
 
 // 12-Month history (monthly portfolio totals)
@@ -598,101 +602,168 @@ let filterMode = 'all';
 let trendChartObj = null, allocChartObj = null, sectorChartObj = null, modalChartObj = null;
 
 // ============================
-// LIVE DATA — Fast Batched Fetch + Cache
+// LIVE DATA — Rebuilt with reliable multi-source fetch
 // ============================
-const CACHE_KEY = 'gondas_livedata_cache';
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes — no re-fetch if data is fresh
+const CACHE_KEY = 'gondas_livedata_v11'; // correct qty+price final
+const CACHE_TTL = 4 * 60 * 1000; // 4 min cache
 
-function saveCache(data) {
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
-}
-function loadCache() {
+function saveCache(data) { try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {} }
+function loadCache() { try { const r = JSON.parse(localStorage.getItem(CACHE_KEY)); return r && Date.now()-r.ts < CACHE_TTL ? r : null; } catch { return null; } }
+function cacheAge() { try { return JSON.parse(localStorage.getItem(CACHE_KEY))?.ts; } catch { return null; } }
+function chunk(arr, n) { const o=[]; for(let i=0;i<arr.length;i+=n) o.push(arr.slice(i,i+n)); return o; }
+
+// ============================
+// LIVE PRICE ENGINE — Finnhub API (free, CORS-enabled) + Yahoo fallback
+// Finnhub free tier: 60 calls/min, proper CORS, works from GitHub Pages
+// Sign up free at finnhub.io to get your own key — default uses demo key
+// ============================
+
+// FREE Finnhub API key — sign up at finnhub.io for your own (free, 60 req/min)
+// Demo key has very limited rate — get your own free key in 30 seconds
+const FINNHUB_KEY = 'd7tondhr01qlbd3kvadgd7tondhr01qlbd3kvae0'; // Replace with your free key from finnhub.io
+
+// Fetch a single quote from Finnhub
+async function fetchFinnhub(ticker) {
   try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (Date.now() - parsed.ts < CACHE_TTL) return parsed;
-    return null; // expired
+    const res = await fetch(
+      `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${FINNHUB_KEY}`,
+      { signal: AbortSignal.timeout(6000) }
+    );
+    if (!res.ok) return null;
+    const d = await res.json();
+    if (!d.c || d.c === 0) return null;  // c = current price
+    return {
+      price: d.c,
+      dayChange: d.c - d.pc,            // pc = previous close
+      dayChangePct: ((d.c - d.pc) / d.pc) * 100,
+      prevClose: d.pc,
+      high52: d.h,                       // h = day high (use as proxy)
+      low52: d.l,                        // l = day low
+      volume: null, pe: null, beta: null, divYield: null
+    };
   } catch { return null; }
 }
-function cacheAge() {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw).ts;
-  } catch { return null; }
+
+// Batch fetch from Finnhub — one call per ticker, run in parallel
+async function fetchFinnhubBatch(tickers) {
+  const results = await Promise.allSettled(
+    tickers.map(async t => {
+      const data = await fetchFinnhub(t);
+      return { ticker: t, data };
+    })
+  );
+  const out = {};
+  results.forEach(r => {
+    if (r.status === 'fulfilled' && r.value.data) {
+      out[r.value.ticker] = r.value.data;
+    }
+  });
+  return out;
 }
 
-// Multi-proxy fallback — tries 3 different CORS proxies, uses first that works
-const PROXIES = [
-  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-  url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-  url => `https://thingproxy.freeboard.io/fetch/${url}`
-];
-
-async function proxyFetch(targetUrl, timeout = 10000) {
-  for (const makeProxy of PROXIES) {
+// Yahoo Finance v7 batch — works when browser has Yahoo cookies
+async function fetchYahooBatch(tickers) {
+  const symbols = tickers.join(',');
+  const urls = [
+    `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,regularMarketPreviousClose,fiftyTwoWeekHigh,fiftyTwoWeekLow,regularMarketVolume,trailingPE,beta,trailingAnnualDividendYield,shortName`,
+    `https://query2.finance.yahoo.com/v7/finance/quote?symbols=${symbols}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,regularMarketPreviousClose,fiftyTwoWeekHigh,fiftyTwoWeekLow,regularMarketVolume,trailingPE,beta,trailingAnnualDividendYield,shortName`,
+  ];
+  for (const url of urls) {
     try {
-      const proxyUrl = makeProxy(targetUrl);
-      const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(timeout) });
+      const res = await fetch(url, { signal: AbortSignal.timeout(7000) });
       if (!res.ok) continue;
-      const text = await res.text();
-      // allorigins wraps in {contents:...}, others return raw
-      try {
-        const wrapped = JSON.parse(text);
-        if (wrapped.contents) return JSON.parse(wrapped.contents);
-        return wrapped;
-      } catch { return JSON.parse(text); }
+      const data = await res.json();
+      const results = data?.quoteResponse?.result;
+      if (!results?.length) continue;
+      const out = {};
+      results.forEach(q => {
+        if (!q.regularMarketPrice) return;
+        const dy = q.trailingAnnualDividendYield;
+        out[q.symbol] = {
+          price: q.regularMarketPrice,
+          dayChange: q.regularMarketChange,
+          dayChangePct: q.regularMarketChangePercent,
+          prevClose: q.regularMarketPreviousClose,
+          high52: q.fiftyTwoWeekHigh,
+          low52: q.fiftyTwoWeekLow,
+          volume: q.regularMarketVolume,
+          pe: q.trailingPE || null,
+          beta: q.beta || null,
+          divYield: dy ? (dy * 100).toFixed(2) : null,
+          name: q.longName || q.shortName || q.symbol
+        };
+      });
+      if (Object.keys(out).length > 0) return out;
     } catch { continue; }
   }
   return null;
 }
 
-async function fetchBatch(tickers) {
-  try {
-    const symbols = tickers.join(',');
-    const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,regularMarketPreviousClose,fiftyTwoWeekHigh,fiftyTwoWeekLow,regularMarketVolume,trailingPE,forwardPE,beta,dividendYield,trailingAnnualDividendYield,marketCap,shortName,longName`;
-    const data = await proxyFetch(url);
-    if (!data) return {};
-    const results = data?.quoteResponse?.result || [];
-    const out = {};
-    results.forEach(q => {
-      const divYield = q.trailingAnnualDividendYield || q.dividendYield;
-      out[q.symbol] = {
-        price: q.regularMarketPrice,
-        dayChange: q.regularMarketChange,
-        dayChangePct: q.regularMarketChangePercent,
-        prevClose: q.regularMarketPreviousClose,
-        high52: q.fiftyTwoWeekHigh,
-        low52: q.fiftyTwoWeekLow,
-        volume: q.regularMarketVolume,
-        pe: q.trailingPE || q.forwardPE,
-        beta: q.beta,
-        divYield: divYield ? (divYield * 100).toFixed(2) : null,
-        marketCap: q.marketCap,
-        name: q.longName || q.shortName
+// Yahoo Finance v8 chart — individual ticker, different endpoint, often works when v7 doesn't
+async function fetchYahooChart(ticker) {
+  const urls = [
+    `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`,
+    `https://query2.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`,
+  ];
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const meta = data?.chart?.result?.[0]?.meta;
+      if (!meta?.regularMarketPrice) continue;
+      const prev = meta.previousClose || meta.chartPreviousClose || meta.regularMarketPrice;
+      return {
+        price: meta.regularMarketPrice,
+        dayChange: meta.regularMarketPrice - prev,
+        dayChangePct: ((meta.regularMarketPrice - prev) / prev) * 100,
+        prevClose: prev,
+        high52: meta.fiftyTwoWeekHigh,
+        low52: meta.fiftyTwoWeekLow,
+        volume: meta.regularMarketVolume,
+        pe: null, beta: null, divYield: null
       };
-    });
-    return out;
-  } catch { return {}; }
+    } catch { continue; }
+  }
+  return null;
 }
 
-// Chunk array into groups of N
-function chunk(arr, n) {
-  const out = [];
-  for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n));
-  return out;
+// CORS Proxy fallback
+async function fetchYahooProxy(tickers) {
+  const symbols = tickers.join(',');
+  const yf = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,fiftyTwoWeekHigh,fiftyTwoWeekLow,trailingPE,beta,trailingAnnualDividendYield,shortName`;
+  const proxies = [
+    `https://corsproxy.io/?${encodeURIComponent(yf)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(yf)}`,
+  ];
+  for (const p of proxies) {
+    try {
+      const res = await fetch(p, { signal: AbortSignal.timeout(8000) });
+      if (!res.ok) continue;
+      const txt = await res.text();
+      let data;
+      try { const w = JSON.parse(txt); data = w.contents ? JSON.parse(w.contents) : w; } catch { continue; }
+      const results = data?.quoteResponse?.result;
+      if (!results?.length) continue;
+      const out = {};
+      results.forEach(q => {
+        if (!q.regularMarketPrice) return;
+        out[q.symbol] = { price: q.regularMarketPrice, dayChange: q.regularMarketChange, dayChangePct: q.regularMarketChangePercent, high52: q.fiftyTwoWeekHigh, low52: q.fiftyTwoWeekLow, pe: q.trailingPE||null, beta: q.beta||null, divYield: q.trailingAnnualDividendYield?(q.trailingAnnualDividendYield*100).toFixed(2):null };
+      });
+      if (Object.keys(out).length > 0) return out;
+    } catch { continue; }
+  }
+  return null;
 }
 
+// Fetch news
 async function fetchNews() {
-  const newsItems = [];
+  const newsItems = [], tickers = ['TSLA','NVDA','AAPL','AMZN','GOOGL'];
   try {
-    const tickers = ['TSLA','NVDA','AAPL','AMZN','GOOGL'];
-    const url = `https://query1.finance.yahoo.com/v1/finance/search?q=stock+market&newsCount=10&quotesCount=0`;
-    const data = await proxyFetch(url, 8000);
-    if (data) {
-      (data?.news||[]).slice(0,8).forEach(n => {
-        // Tag news with a relevant ticker if title mentions it
+    const res = await fetch(`https://query1.finance.yahoo.com/v1/finance/search?q=stock+market&newsCount=8&quotesCount=0`, { signal: AbortSignal.timeout(6000) });
+    if (res.ok) {
+      const data = await res.json();
+      (data?.news||[]).slice(0,7).forEach(n => {
         const t = tickers.find(tk => n.title?.toUpperCase().includes(tk)) || 'MARKET';
         newsItems.push({ ticker:t, title:n.title, publisher:n.publisher, link:n.link, time:n.providerPublishTime });
       });
@@ -701,53 +772,97 @@ async function fetchNews() {
   return newsItems;
 }
 
+// ── MASTER FETCH — runs all methods, merges best results
 async function fetchAllLiveData() {
   const btn = document.getElementById('refreshBtn');
   const statusEl = document.getElementById('lastUpdate');
-  const bar = document.getElementById('fetchBar');
   const barFill = document.getElementById('fetchBarFill');
+  const sw = document.getElementById('snapshotWarning');
 
   btn.classList.add('loading');
   btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg> Refreshing…`;
-  statusEl.textContent = '⟳ Updating prices…';
   statusEl.style.color = 'var(--accent)';
-  bar.classList.remove('done');
-  barFill.style.width = '8%';
+  barFill.style.width = '5%';
 
-  const allTickers = [...new Set([
-    ...HOLDINGS.map(h => h.ticker),
-    ...RESEARCH_PICKS.map(r => r.ticker),
-    ...watchlist
-  ])];
+  const holdingTickers = [...new Set(HOLDINGS.map(h => h.ticker))];
+  const allTickers = [...new Set([...holdingTickers, ...RESEARCH_PICKS.map(r => r.ticker), ...watchlist])];
 
-  const batches = chunk(allTickers, 10);
-  let completed = 0;
+  let successCount = 0;
 
-  const batchPromises = batches.map(batch =>
-    fetchBatch(batch).then(result => {
-      Object.assign(liveData, result);
-      completed++;
-      const pct = 8 + Math.round((completed / batches.length) * 88);
-      barFill.style.width = pct + '%';
+  // ── STEP 1: Try Yahoo Finance batch (fastest, best data)
+  statusEl.textContent = '⟳ Trying Yahoo Finance…';
+  barFill.style.width = '10%';
+  const yahooResult = await fetchYahooBatch(allTickers);
+  if (yahooResult) {
+    Object.assign(liveData, yahooResult);
+    successCount = holdingTickers.filter(t => liveData[t]?.price).length;
+    barFill.style.width = '60%';
+    renderAll();
+  }
+
+  // ── STEP 2: For any still missing, try Finnhub in parallel
+  const missingAfterYahoo = holdingTickers.filter(t => !liveData[t]?.price);
+  if (missingAfterYahoo.length > 0) {
+    statusEl.textContent = `⟳ Fetching ${missingAfterYahoo.length} remaining via Finnhub…`;
+    barFill.style.width = '65%';
+    // Rate limit: Finnhub demo = 1 req/sec. Use small batches with delay
+    const BATCH_SIZE = 5;
+    for (let i = 0; i < missingAfterYahoo.length; i += BATCH_SIZE) {
+      const batch = missingAfterYahoo.slice(i, i + BATCH_SIZE);
+      const finnhubResult = await fetchFinnhubBatch(batch);
+      Object.assign(liveData, finnhubResult);
+      barFill.style.width = (65 + Math.round((i + BATCH_SIZE) / missingAfterYahoo.length * 20)) + '%';
       renderAll();
-    })
-  );
+      if (i + BATCH_SIZE < missingAfterYahoo.length) {
+        await new Promise(r => setTimeout(r, 1200)); // rate limit pause
+      }
+    }
+  }
 
-  await Promise.allSettled(batchPromises);
+  // ── STEP 3: For anything still missing, try Yahoo chart endpoint individually
+  const stillMissing = holdingTickers.filter(t => !liveData[t]?.price);
+  if (stillMissing.length > 0) {
+    statusEl.textContent = `⟳ Trying chart endpoint for ${stillMissing.length} remaining…`;
+    await Promise.allSettled(stillMissing.map(async t => {
+      const r = await fetchYahooChart(t);
+      if (r) liveData[t] = r;
+    }));
+    barFill.style.width = '90%';
+    renderAll();
+  }
+
+  // ── STEP 4: Last resort — CORS proxy
+  const finalMissing = holdingTickers.filter(t => !liveData[t]?.price);
+  if (finalMissing.length > 0) {
+    statusEl.textContent = '⟳ Trying CORS proxy…';
+    const proxyResult = await fetchYahooProxy(finalMissing);
+    if (proxyResult) Object.assign(liveData, proxyResult);
+    renderAll();
+  }
 
   saveCache(liveData);
   fetchNews().then(news => renderNews(news));
 
   barFill.style.width = '100%';
-  setTimeout(() => bar.classList.add('done'), 600);
-
   btn.classList.remove('loading');
   btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg> Refresh Live`;
   statusEl.style.color = '';
-  statusEl.textContent = `✓ Live · ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`;
+
+  const liveCount = holdingTickers.filter(t => liveData[t]?.price).length;
+  const total = holdingTickers.length;
+
+  if (liveCount >= total * 0.8) {
+    statusEl.textContent = `✓ Live · ${liveCount}/${total} prices · ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
+    if (sw) sw.style.display = 'none';
+  } else if (liveCount > 0) {
+    statusEl.textContent = `⚠ Partial · ${liveCount}/${total} live · click Refresh to retry`;
+    if (sw) { sw.style.display='flex'; sw.innerHTML=`⚠️ Only ${liveCount}/${total} prices loaded live. <strong>Get a free Finnhub API key at finnhub.io</strong> and replace 'demo' in the code for reliable prices.`; }
+  } else {
+    statusEl.textContent = `⚠ Snapshot prices — click Refresh Live to retry`;
+    if (sw) { sw.style.display='flex'; sw.innerHTML='⚠️ <strong>Live prices unavailable.</strong> All APIs blocked. <a href="https://finnhub.io/register" target="_blank" style="color:var(--accent)">Get a free Finnhub API key</a> and update FINNHUB_KEY in the code for reliable live prices.'; }
+  }
   renderAll();
 }
-
 // ============================
 // RENDER
 // ============================
@@ -794,7 +909,7 @@ function renderKPIs() {
     { label:"Unrealized Gain", value:fmt$(totalGL), sub:fmtPct(glPct), color:glColor(totalGL), change: totalGL >= 0 },
     { label:"Gain/Loss %", value:(glPct>=0?'+':'')+fmtN(glPct*100,1)+'%', sub:"vs cost basis", color:glColor(glPct) },
     { label:"Positions", value:HOLDINGS.length.toString(), sub:`${PORTFOLIO_DATA.accounts.filter(a=>a.value>0).length} accounts`, color:"var(--text2)" },
-    { label:"TSLA Concentration", value:"55.4%", sub:"⚠️ Exceeds 10% threshold", color:"var(--red)" }
+    { label:"TSLA Concentration", value:fmtN(((liveData['TSLA']?.price||HOLDINGS.find(h=>h.ticker==='TSLA')?.snapshotPrice||371.58)*517.2/totalValue*100),1)+'%', sub:"⚠️ Exceeds 10% threshold", color:"var(--red)" }
   ];
   document.getElementById('kpiGrid').innerHTML = kpis.map(k=>`
     <div class="kpi-card">
@@ -874,6 +989,53 @@ function renderHoldings() {
       <td style="text-align:right">${beta ? fmtN(beta,2) : '<span style="color:var(--text3)">—</span>'}</td>
     </tr>`;
   }).join('');
+
+  // TOTALS ROW
+  let totValue = 0, totCost = 0, totGL = 0, totAlloc = 0;
+  rows.forEach(h => {
+    totValue += getLiveValue(h);
+    totCost  += h.costBasis;
+    totGL    += getLiveGL(h);
+    totAlloc += h.alloc * 100;
+  });
+  const totGLPct = totCost > 0 ? totGL / totCost : 0;
+
+  // Also compute grand totals across ALL holdings (for cross-check)
+  let grandValue = 0, grandCost = 0, grandGL = 0;
+  HOLDINGS.forEach(h => { grandValue += getLiveValue(h); grandCost += h.costBasis; grandGL += getLiveGL(h); });
+  const grandGLPct = grandCost > 0 ? grandGL / grandCost : 0;
+
+  const isFiltered = rows.length < HOLDINGS.length;
+
+  tbody.innerHTML += `
+    <tr style="background:var(--surface2);border-top:2px solid var(--border)">
+      <td colspan="3" style="font-weight:700;font-size:12px;color:var(--text2);padding:12px 14px;font-family:'DM Mono',monospace">
+        ${isFiltered ? `FILTERED TOTAL (${rows.length} rows)` : `PORTFOLIO TOTAL (${rows.length} positions)`}
+      </td>
+      <td style="text-align:right;font-weight:700;font-size:12px;border-top:2px solid var(--border)">—</td>
+      <td style="text-align:right;font-weight:700;font-size:12px;border-top:2px solid var(--border)">—</td>
+      <td style="text-align:right;font-weight:700;font-size:12px;border-top:2px solid var(--border)">—</td>
+      <td style="text-align:right;font-weight:800;font-size:13px;color:var(--accent);border-top:2px solid var(--border)">${fmt$(totValue)}</td>
+      <td style="text-align:right;font-weight:800;font-size:13px;color:${glColor(totGL)};border-top:2px solid var(--border)">${totGL>=0?'+':''}${fmt$(totGL)}</td>
+      <td style="text-align:right;font-weight:800;font-size:13px;color:${glColor(totGLPct)};border-top:2px solid var(--border)">${totGLPct>=0?'+':''}${fmtN(totGLPct*100,1)}%</td>
+      <td style="text-align:right;font-weight:700;font-size:12px;border-top:2px solid var(--border)">${fmtN(totAlloc,1)}%</td>
+      <td colspan="4" style="border-top:2px solid var(--border)"></td>
+    </tr>
+    ${isFiltered ? `
+    <tr style="background:#fff8e1;border-top:1px dashed #fde68a">
+      <td colspan="3" style="font-weight:600;font-size:11px;color:#92400e;padding:10px 14px;font-family:'DM Mono',monospace">
+        📊 GRAND TOTAL (all ${HOLDINGS.length} positions — matches Overview)
+      </td>
+      <td style="text-align:right;font-size:11px">—</td>
+      <td style="text-align:right;font-size:11px">—</td>
+      <td style="text-align:right;font-size:11px">—</td>
+      <td style="text-align:right;font-weight:700;font-size:12px;color:var(--accent)">${fmt$(grandValue)}</td>
+      <td style="text-align:right;font-weight:700;font-size:12px;color:${glColor(grandGL)}">${grandGL>=0?'+':''}${fmt$(grandGL)}</td>
+      <td style="text-align:right;font-weight:700;font-size:12px;color:${glColor(grandGLPct)}">${grandGLPct>=0?'+':''}${fmtN(grandGLPct*100,1)}%</td>
+      <td style="text-align:right;font-size:11px">100.0%</td>
+      <td colspan="4"></td>
+    </tr>` : ''}
+  `;
 }
 
 function renderAnalysis() {
@@ -1375,12 +1537,14 @@ function startCountdown() {
   // Step 2: Show market status badge
   updateMarketBadge();
 
-  // Step 3: Fetch live data unless cache is very fresh (< 5 min)
-  if (cached && Date.now() - cached.ts < CACHE_TTL) {
-    document.getElementById('lastUpdate').textContent =
-      `✓ Cached · ${new Date(cached.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
+  // Step 3: ALWAYS fetch live on every page load — prices change daily
+  const cacheAgeSec = cached ? Math.round((Date.now() - cached.ts) / 1000) : null;
+  if (cached && cacheAgeSec < 120) {
+    // Very fresh cache (< 2 min) — render first, then refresh silently
+    document.getElementById('lastUpdate').textContent = `Cached ${cacheAgeSec}s ago — refreshing…`;
+    setTimeout(() => fetchAllLiveData(), 800);
   } else {
-    fetchAllLiveData();
+    fetchAllLiveData(); // always fetch — never use stale snapshot prices
   }
 
   // Step 4: Start auto-refresh (fires every 5 min, only fetches if market is open)
