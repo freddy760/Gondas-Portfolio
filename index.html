@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GONDAS Portfolio Dashboard - Updated Jun 3 2026</title>
+<title>GONDA STOCK PORTFOLIO - Finnhub Refresh Fixed Jun 4 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
@@ -2415,11 +2415,11 @@ let trendChartObj = null, allocChartObj = null, sectorChartObj = null, modalChar
 // LIVE DATA — Rebuilt with reliable multi-source fetch
 // ============================
 const CACHE_KEY = 'gondas_livedata_v14_accounts_separate_jun03_2026'; // correct qty+price final
-const CACHE_TTL = 0; // live cache disabled - always fetch fresh prices
+const CACHE_TTL = 3 * 60 * 1000; // 3 min cache
 
 function saveCache(data) { try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {} }
-function loadCache() { return null; }
-function cacheAge() { return null; }
+function loadCache() { try { const r = JSON.parse(localStorage.getItem(CACHE_KEY)); return r && Date.now()-r.ts < CACHE_TTL ? r : null; } catch { return null; } }
+function cacheAge() { try { return JSON.parse(localStorage.getItem(CACHE_KEY))?.ts; } catch { return null; } }
 function chunk(arr, n) { const o=[]; for(let i=0;i<arr.length;i+=n) o.push(arr.slice(i,i+n)); return o; }
 
 // ============================
@@ -2440,7 +2440,7 @@ async function fetchFinnhub(ticker) {
   try {
     const res = await fetch(
       `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${FINNHUB_KEY}&_=${Date.now()}`,
-      { signal: AbortSignal.timeout(6000) }
+      { cache:'no-store', signal: AbortSignal.timeout(6000) }
     );
     if (!res.ok) return null;
     const d = await res.json();
@@ -2483,7 +2483,7 @@ async function fetchYahooBatch(tickers) {
   ];
   for (const url of urls) {
     try {
-      const res = await fetch(url, { signal: AbortSignal.timeout(7000) });
+      const res = await fetch(url, { cache:'no-store', signal: AbortSignal.timeout(7000) });
       if (!res.ok) continue;
       const data = await res.json();
       const results = data?.quoteResponse?.result;
@@ -2520,7 +2520,7 @@ async function fetchYahooChart(ticker) {
   ];
   for (const url of urls) {
     try {
-      const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+      const res = await fetch(url, { cache:'no-store', signal: AbortSignal.timeout(6000) });
       if (!res.ok) continue;
       const data = await res.json();
       const meta = data?.chart?.result?.[0]?.meta;
@@ -2551,7 +2551,7 @@ async function fetchYahooProxy(tickers) {
   ];
   for (const p of proxies) {
     try {
-      const res = await fetch(p, { signal: AbortSignal.timeout(8000) });
+      const res = await fetch(p, { cache:'no-store', signal: AbortSignal.timeout(8000) });
       if (!res.ok) continue;
       const txt = await res.text();
       let data;
@@ -2573,7 +2573,7 @@ async function fetchYahooProxy(tickers) {
 async function fetchNews() {
   const newsItems = [], tickers = ['TSLA','NVDA','AAPL','AMZN','GOOGL'];
   try {
-    const res = await fetch(`https://query1.finance.yahoo.com/v1/finance/search?q=stock+market&newsCount=8&quotesCount=0`, { signal: AbortSignal.timeout(6000) });
+    const res = await fetch(`https://query1.finance.yahoo.com/v1/finance/search?q=stock+market&newsCount=8&quotesCount=0`, { cache:'no-store', signal: AbortSignal.timeout(6000) });
     if (res.ok) {
       const data = await res.json();
       (data?.news||[]).slice(0,7).forEach(n => {
@@ -2586,99 +2586,114 @@ async function fetchNews() {
 }
 
 // ── MASTER FETCH — rate-limit aware, smart cooldown
-async function fetchAllLiveData(forceRefresh = true) {
-  if (isRefreshing) {
-    const statusElBusy = document.getElementById('lastUpdate');
-    if (statusElBusy) statusElBusy.textContent = '⟳ Refresh already running…';
-    return;
-  }
-  isRefreshing = true;
-
+async function fetchAllLiveData(forceRefresh = false) {
   const btn = document.getElementById('refreshBtn');
   const statusEl = document.getElementById('lastUpdate');
   const barFill = document.getElementById('fetchBarFill');
   const sw = document.getElementById('snapshotWarning');
-  const refreshStarted = Date.now();
 
-  if (btn) {
-    btn.classList.add('loading');
-    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg> Refreshing…`;
+  // Prevent two refreshes running at the same time.
+  if (window.__gondaRefreshing) {
+    if (statusEl) statusEl.textContent = '⏳ Refresh already running…';
+    return;
   }
-  if (statusEl) { statusEl.style.color = 'var(--accent)'; statusEl.textContent = '⟳ Starting fresh live refresh…'; }
-  if (barFill) barFill.style.width = '5%';
+  window.__gondaRefreshing = true;
 
-  const holdingTickers = [...new Set(HOLDINGS.map(h => h.ticker))];
-  liveData = {}; // no old/cached prices used
-  try { localStorage.removeItem(CACHE_KEY); } catch {}
-
-  // 1) Finnhub first. This avoids stale Yahoo/browser cached prices.
-  let liveCountBeforeFallback = 0;
   try {
-    if (statusEl) statusEl.textContent = `⟳ Finnhub live refresh 0/${holdingTickers.length}…`;
-    const finnhubResult = await fetchFinnhubBatch(holdingTickers, (done, total) => {
-      if (barFill) barFill.style.width = (5 + Math.round(done/total * 70)) + '%';
-      if (statusEl) statusEl.textContent = `⟳ Finnhub live refresh ${done}/${total}…`;
-      if (done % 3 === 0) renderAll();
-    });
-    Object.keys(finnhubResult || {}).forEach(t => {
-      finnhubResult[t]._source = 'Finnhub';
-      finnhubResult[t]._ts = refreshStarted;
-    });
-    Object.assign(liveData, finnhubResult || {});
-    liveCountBeforeFallback = holdingTickers.filter(t => liveData[t]?.price).length;
-    renderAll();
-  } catch (e) {
-    if (statusEl) statusEl.textContent = '⚠ Finnhub failed, trying fallback…';
-  }
+    if (btn) {
+      btn.classList.add('loading');
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg> Refreshing…`;
+    }
+    if (statusEl) { statusEl.style.color = 'var(--accent)'; statusEl.textContent = '⟳ Fetching fresh live prices from Finnhub…'; }
+    if (barFill) barFill.style.width = '5%';
 
-  // 2) Yahoo chart fallback for only missing symbols.
-  let missing = holdingTickers.filter(t => !liveData[t]?.price);
-  if (missing.length > 0) {
-    if (statusEl) statusEl.textContent = `⟳ Fallback refresh for ${missing.length} missing tickers…`;
-    await Promise.allSettled(missing.map(async t => {
-      const r = await fetchYahooChart(t);
-      if (r && r.price) { r._source = 'Yahoo chart'; r._ts = refreshStarted; liveData[t] = r; }
-    }));
-    renderAll();
-  }
+    const holdingTickers = [...new Set(HOLDINGS.map(h => h.ticker))];
+    const allTickers = [...new Set([...holdingTickers, ...RESEARCH_PICKS.map(r => r.ticker), ...watchlist])];
 
-  // 3) Proxy fallback as last resort.
-  missing = holdingTickers.filter(t => !liveData[t]?.price);
-  if (missing.length > 0) {
-    const proxyResult = await fetchYahooProxy(missing);
-    Object.keys(proxyResult || {}).forEach(t => { proxyResult[t]._source = 'Yahoo proxy'; proxyResult[t]._ts = refreshStarted; });
-    if (proxyResult) Object.assign(liveData, proxyResult);
-    renderAll();
-  }
+    // Always start clean. Do not reuse Yahoo/browser/localStorage prices.
+    liveData = {};
+    try { localStorage.removeItem(CACHE_KEY); } catch {}
 
-  const liveCount = holdingTickers.filter(t => liveData[t]?.price).length;
-  if (liveCount > 0) {
-    lastFullRefresh = Date.now();
+    // STEP 1 — Finnhub first for actual portfolio holdings. This is the most reliable source from GitHub Pages.
+    const fresh = {};
+    let done = 0;
+    for (const t of holdingTickers) {
+      if (statusEl) statusEl.textContent = `⟳ Finnhub live prices: ${done}/${holdingTickers.length} fetched…`;
+      const r = await fetchFinnhub(t);
+      if (r && r.price) {
+        r.source = 'Finnhub';
+        fresh[t] = r;
+      }
+      done++;
+      if (barFill) barFill.style.width = (5 + Math.round(done / holdingTickers.length * 70)) + '%';
+      if (done % 3 === 0) { Object.assign(liveData, fresh); renderAll(); }
+      // Small delay to stay under free Finnhub rate limits.
+      if (done < holdingTickers.length) await new Promise(resolve => setTimeout(resolve, 1200));
+    }
+    Object.assign(liveData, fresh);
+    renderAll();
+
+    // STEP 2 — Yahoo only for missing portfolio tickers and for research/watchlist.
+    const stillMissing = allTickers.filter(t => !liveData[t]?.price);
+    if (stillMissing.length) {
+      if (statusEl) statusEl.textContent = `⟳ Yahoo fallback for ${stillMissing.length} tickers…`;
+      if (barFill) barFill.style.width = '82%';
+      const yahooResult = await fetchYahooBatch(stillMissing);
+      if (yahooResult) {
+        Object.keys(yahooResult).forEach(t => yahooResult[t].source = 'Yahoo');
+        Object.assign(liveData, yahooResult);
+      }
+      renderAll();
+    }
+
+    // STEP 3 — Yahoo chart fallback only for any remaining portfolio tickers.
+    const finalMissing = holdingTickers.filter(t => !liveData[t]?.price);
+    if (finalMissing.length) {
+      if (statusEl) statusEl.textContent = `⟳ Chart fallback for ${finalMissing.length} missing tickers…`;
+      await Promise.allSettled(finalMissing.map(async t => {
+        const r = await fetchYahooChart(t);
+        if (r && r.price) { r.source = 'Yahoo chart'; liveData[t] = r; }
+      }));
+      renderAll();
+    }
+
+    const liveCount = holdingTickers.filter(t => liveData[t]?.price).length;
     saveCache(liveData);
-  }
-  fetchNews().then(news => renderNews(news));
+    fetchNews().then(news => renderNews(news));
 
-  if (barFill) barFill.style.width = '100%';
-  if (btn) {
-    btn.classList.remove('loading');
-    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg> Refresh Live`;
-  }
-  if (statusEl) statusEl.style.color = '';
+    if (barFill) barFill.style.width = '100%';
+    const now = new Date();
+    const sourceCounts = holdingTickers.reduce((acc, t) => {
+      const src = liveData[t]?.source || (liveData[t]?.price ? 'Live' : 'Missing');
+      acc[src] = (acc[src] || 0) + 1;
+      return acc;
+    }, {});
+    const sourceMsg = Object.entries(sourceCounts).map(([k,v]) => `${k}:${v}`).join(' · ');
 
-  const srcs = [...new Set(Object.values(liveData).map(x => x._source).filter(Boolean))].join(', ');
-  const timeText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-  if (liveCount >= holdingTickers.length * 0.8) {
-    if (statusEl) statusEl.textContent = `✓ Live · ${liveCount}/${holdingTickers.length} prices · ${timeText} · ${srcs || 'API'}`;
-    if (sw) sw.style.display = 'none';
-  } else if (liveCount > 0) {
-    if (statusEl) statusEl.textContent = `⚠ Partial live · ${liveCount}/${holdingTickers.length} · ${timeText}`;
-    if (sw) { sw.style.display='flex'; sw.innerHTML=`⚠️ Only ${liveCount}/${holdingTickers.length} live prices loaded. Some symbols are still showing snapshot prices. Try again after 2–3 minutes or check the API key.`; }
-  } else {
-    if (statusEl) statusEl.textContent = '⚠ No live prices loaded — API blocked/rate-limited';
-    if (sw) { sw.style.display='flex'; sw.innerHTML='⚠️ <strong>No live prices loaded.</strong> This usually means the Finnhub key is rate-limited/invalid, or the browser blocked API calls. Open from GitHub Pages and check Chrome Console → Network for API errors.'; }
+    if (statusEl) {
+      statusEl.style.color = liveCount ? 'var(--green)' : 'var(--red)';
+      statusEl.textContent = liveCount
+        ? `✓ Fresh ${liveCount}/${holdingTickers.length} · ${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})} · ${sourceMsg}`
+        : `⚠ Live refresh failed · ${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})}`;
+    }
+    if (sw) {
+      if (liveCount >= holdingTickers.length) sw.style.display = 'none';
+      else {
+        sw.style.display = 'flex';
+        sw.innerHTML = `⚠️ <strong>Partial live refresh:</strong> ${liveCount}/${holdingTickers.length} portfolio tickers refreshed. Missing: ${finalMissing.join(', ') || 'None'}`;
+      }
+    }
+    renderAll();
+  } catch (err) {
+    console.error('Live refresh failed:', err);
+    if (statusEl) { statusEl.style.color = 'var(--red)'; statusEl.textContent = '⚠ Refresh error — check browser console / API key'; }
+  } finally {
+    window.__gondaRefreshing = false;
+    if (btn) {
+      btn.classList.remove('loading');
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg> Refresh Live`;
+    }
   }
-  isRefreshing = false;
-  renderAll();
 }
 // ============================
 // RENDER
@@ -3432,32 +3447,32 @@ function startCountdown() {
 // INIT — Instant load + auto-refresh
 // ============================
 (function init() {
-  // Apply saved edits first, but do not load old price cache.
+  // Step 1: Apply any saved edits before first render, then render immediately
   if (typeof loadEditorData === 'function') loadEditorData();
-  const overlay = document.getElementById('loadingOverlay');
-  if (overlay) overlay.style.display = 'none';
-
-  // Always start on Overview. Old exported DOM state should not force Edit tab.
-  if (typeof showTab === 'function') showTab('overview');
-
+  document.getElementById('loadingOverlay').style.display = 'none';
+  const cached = loadCache();
+  if (cached) {
+    liveData = cached.data;
+    const ageMin = Math.round((Date.now() - cached.ts) / 60000);
+    document.getElementById('lastUpdate').textContent = `Cached ${ageMin < 1 ? '<1' : ageMin}m ago`;
+  }
   renderAll();
   renderNews([]);
+
+  // Step 2: Show market status badge
   updateMarketBadge();
 
-  // Warning when opened as a local OneDrive/file path.
-  if (location.protocol === 'file:') {
-    const ov = document.getElementById('tab-overview');
-    if (ov && !document.getElementById('localFileWarning')) {
-      const div = document.createElement('div');
-      div.id = 'localFileWarning';
-      div.style.cssText = 'background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px 18px;margin-bottom:20px;font-size:13px;color:#9a3412';
-      div.innerHTML = '⚠️ <strong>You are opening a local OneDrive file path.</strong> Live refresh is more reliable from your GitHub Pages website link starting with <strong>https://</strong>. Local file mode may be blocked by browser/API security.';
-      ov.insertBefore(div, ov.firstChild);
-    }
+  // Step 3: ALWAYS fetch live on every page load — prices change daily
+  const cacheAgeSec = cached ? Math.round((Date.now() - cached.ts) / 1000) : null;
+  if (cached && cacheAgeSec < 120) {
+    // Very fresh cache (< 2 min) — render first, then refresh silently
+    document.getElementById('lastUpdate').textContent = `Cached ${cacheAgeSec}s ago — refreshing…`;
+    setTimeout(() => fetchAllLiveData(true), 800);
+  } else {
+    fetchAllLiveData(true); // always fetch — never use stale snapshot prices
   }
 
-  // Always fetch fresh prices after screen loads. No stale browser price cache is used.
-  setTimeout(() => fetchAllLiveData(true), 600);
+  // Step 4: Start auto-refresh (fires every 5 min, only fetches if market is open)
   startAutoRefresh();
   startCountdown();
 })();
