@@ -13,7 +13,7 @@
 <body>
 <header class="top"><div class="topin"><div class="brand"><div class="mark">GS</div><div><div class="title">GONDA STOCK PORTFOLIO</div><div class="sub">Live market portfolio prices</div></div></div><nav class="tabs" id="tabs"><button class="tabbtn active" data-tab="overview">Overview</button><button class="tabbtn" data-tab="holdings">Holdings</button><button class="tabbtn" data-tab="analysis">Analysis</button><button class="tabbtn" data-tab="editor">Edit Portfolio</button><button class="tabbtn" data-tab="settings">API / Settings</button></nav><div class="actions"><span class="pill mono" id="marketPill">Market</span><span class="pill mono" id="statusPill">Snapshot mode</span><button class="btn primary" id="refreshBtn">↻ Refresh Live</button></div></div></header>
 <main class="container">
-<section class="notice blue"><b>Stable Pro V5:</b> Market-only view. All visible tables and dashboard values use <b>Current Price</b> and <b>Current Value</b>. No broker-price comparison columns are displayed.</section>
+<section class="notice blue"><b>Stable Pro V6:</b> Market-only view with automatic refresh. Current Price and Current Value update from Finnhub every 5 minutes while the page is open and your API key is saved.</section>
 <section id="apiPanel" class="notice"><b>🔑 Current Price Refresh Setup</b><div class="muted">Paste your Finnhub key once per browser. The key is stored only in your browser localStorage, not inside exported portfolio data.</div><div class="apirow"><input id="apiKeyInput" placeholder="Paste Finnhub API key here" autocomplete="off"><button class="btn orange" id="saveKeyBtn">Save Key</button><button class="btn primary" id="testKeyBtn">Test TSLA</button><button class="btn red" id="clearKeyBtn">Clear Key</button><span id="keyStatus" class="mono muted">No private key saved</span></div></section>
 <section id="overview" class="tab active"><div class="grid kpis" id="kpiGrid"></div><div class="grid twocol" style="margin-top:18px"><div class="card"><h3>Portfolio Value — current market view</h3><div class="chartBox"><canvas id="valueChart"></canvas></div></div><div class="card"><h3>Top holdings concentration</h3><div id="topHoldings" class="summaryList"></div></div></div><div class="grid twocol" style="margin-top:18px"><div class="card"><h3>Account breakdown</h3><div id="accountBreakdown"></div></div><div class="card"><h3>Sector allocation</h3><div id="sectorBreakdown"></div></div></div></section>
 <section id="holdings" class="tab"><div class="toolbar"><input id="searchBox" placeholder="Search ticker, company, or account"><select id="accountFilter"><option value="">All accounts</option></select><select id="modeFilter"><option value="all">All holdings</option><option value="gain">Gainers</option><option value="loss">Losers</option><option value="variance">Live refreshed only</option></select><button class="btn" id="exportCsvBtn">Export CSV</button></div><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Company</th><th>Account</th><th>Shares</th><th>Avg Cost</th><th>Current Price</th><th>Current Value</th><th>Price Source</th><th>Gain/Loss</th><th>G/L %</th><th>As Of</th></tr></thead><tbody id="holdingsBody"></tbody></table></div></section>
@@ -681,13 +681,13 @@ function brokerValue(h){ return Number(h.brokerValue ?? h.value ?? (h.qty*h.brok
 function brokerPrice(h){ return Number(h.brokerPrice ?? h.snapshotPrice ?? (brokerValue(h)/h.qty)) || 0; }
 function livePrice(h){ return liveData[h.ticker]?.price ?? null; }
 function liveValue(h){ const p=livePrice(h); return p? p*h.qty : null; }
-function activeValue(h){ return brokerValue(h); }
+function activeValue(h){ return marketValue(h); }
 function costBasis(h){ return Number(h.costBasis ?? (h.qty*h.cost)) || 0; }
 function gain(h){ return activeValue(h)-costBasis(h); }
 function gainPct(h){ const c=costBasis(h); return c?gain(h)/c*100:0; }
 function accounts(){ return [...new Set(holdings.map(h=>h.account))].sort(); }
 function tickers(){ return [...new Set(holdings.map(h=>h.ticker))].sort(); }
-function accountClass(a){ return 'badge broker'; }
+function accountClass(a){ return 'badge live'; }
 function setTab(name){ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); document.querySelectorAll('.tabbtn').forEach(x=>x.classList.toggle('active',x.dataset.tab===name)); $(name)?.classList.add('active'); if(name==='settings') renderDiagnostics(); }
 document.querySelectorAll('.tabbtn').forEach(b=>{ b.addEventListener('click',()=>setTab(b.dataset.tab)); b.addEventListener('touchend',e=>{e.preventDefault();setTab(b.dataset.tab);},{passive:false}); });
 function marketStatus(){ const now=new Date(); const eastern=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'})); const day=eastern.getDay(), m=eastern.getHours()*60+eastern.getMinutes(); const open= day>=1&&day<=5&&m>=570&&m<=960; $('marketPill').textContent = open?'● Market Open':'● After Hours'; $('marketPill').style.color = open?'var(--green)':'var(--muted)'; }
@@ -735,12 +735,65 @@ function getApiKey(){ return (localStorage.getItem(API_KEY_STORAGE)||'').trim();
 function refreshKeyStatus(){ const k=getApiKey(); $('keyStatus').textContent=k?`Saved key ending ${k.slice(-4)}`:'No private key saved'; }
 async function testKey(){ const key=($('apiKeyInput').value.trim()||getApiKey()); if(!key){ alert('Paste and save your Finnhub API key first.'); return;} try{ const q=await fetchFinnhubQuote('TSLA',key); localStorage.setItem(API_KEY_STORAGE,key); refreshKeyStatus(); $('statusPill').textContent=`✓ API test OK · TSLA ${money(q.price,2)}`; }catch(e){ $('statusPill').textContent='API test failed'; alert('Finnhub test failed: '+e.message); }}
 let refreshing=false;
-async function refreshLive(){ if(refreshing) return; const key=getApiKey(); if(!key){ setTab('settings'); alert('Please save your Finnhub API key first.'); return;} refreshing=true; const btn=$('refreshBtn'); btn.textContent='Refreshing…'; $('statusPill').textContent='Fetching Finnhub quotes…'; const unique=tickers(); let ok=0, fail=0; const fresh={}; liveData={}; renderAll(); for(let i=0;i<unique.length;i++){ const tk=unique[i]; try{ fresh[tk]=await fetchFinnhubQuote(tk,key); liveData={...fresh}; ok++; }catch(e){ fail++; console.warn(e); } $('statusPill').textContent=`Finnhub ${ok}/${unique.length} quotes · ${fail} failed`; renderAll(); await new Promise(r=>setTimeout(r,350)); } liveData=fresh; const liveTotal=portfolioTotals().live; $('statusPill').textContent=`✓ Fresh ${ok}/${unique.length} · Live ${money(liveTotal)} · ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`; btn.textContent='↻ Refresh Live'; refreshing=false; renderAll(); if(ok>0){ const msg='Market prices refreshed. Current Price and Current Value now reflect Finnhub quotes where available.'; if(document.visibilityState==='visible') console.info(msg); } }
+const AUTO_REFRESH_MS = 5 * 60 * 1000;
+let autoRefreshTimer = null;
+let autoCountdownTimer = null;
+let nextAutoRefreshAt = null;
+let lastRefreshSummary = 'Snapshot mode';
+function setStatus(text){ lastRefreshSummary = text; $('statusPill').textContent = text; }
+function formatMs(ms){ const s=Math.max(0,Math.ceil(ms/1000)); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
+function updateAutoCountdown(){
+  if(refreshing) return;
+  const key=getApiKey();
+  if(!key){ $('statusPill').textContent='Save API key for auto-refresh'; return; }
+  if(nextAutoRefreshAt){ $('statusPill').textContent = `${lastRefreshSummary} · auto in ${formatMs(nextAutoRefreshAt-Date.now())}`; }
+}
+function scheduleAutoRefresh(delay=AUTO_REFRESH_MS){
+  if(autoRefreshTimer) clearTimeout(autoRefreshTimer);
+  if(!getApiKey()){ nextAutoRefreshAt=null; return; }
+  nextAutoRefreshAt = Date.now() + delay;
+  autoRefreshTimer = setTimeout(async()=>{
+    if(document.visibilityState === 'visible' && getApiKey()){ await refreshLive(true); }
+    scheduleAutoRefresh(AUTO_REFRESH_MS);
+  }, delay);
+  updateAutoCountdown();
+}
+function startAutoRefresh(){
+  if(!autoCountdownTimer) autoCountdownTimer = setInterval(updateAutoCountdown, 1000);
+  if(getApiKey()) scheduleAutoRefresh(Object.keys(liveData).length ? AUTO_REFRESH_MS : 15000);
+  else updateAutoCountdown();
+}
+async function refreshLive(isAuto=false){
+  if(refreshing) return;
+  const key=getApiKey();
+  if(!key){ setTab('settings'); if(!isAuto) alert('Please save your Finnhub API key first.'); return;}
+  refreshing=true;
+  const btn=$('refreshBtn');
+  btn.textContent=isAuto?'Auto refreshing…':'Refreshing…';
+  $('statusPill').textContent='Fetching Finnhub quotes…';
+  const unique=tickers(); let ok=0, fail=0; const fresh={}; liveData={}; renderAll();
+  for(let i=0;i<unique.length;i++){
+    const tk=unique[i];
+    try{ fresh[tk]=await fetchFinnhubQuote(tk,key); liveData={...fresh}; ok++; }
+    catch(e){ fail++; console.warn(e); }
+    $('statusPill').textContent=`Finnhub ${ok}/${unique.length} quotes · ${fail} failed`;
+    renderAll();
+    await new Promise(r=>setTimeout(r,350));
+  }
+  liveData=fresh;
+  const liveTotal=portfolioTotals().live;
+  setStatus(`✓ Fresh ${ok}/${unique.length} · Live ${money(liveTotal)} · ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`);
+  btn.textContent='↻ Refresh Live';
+  refreshing=false;
+  renderAll();
+  scheduleAutoRefresh(AUTO_REFRESH_MS);
+  if(ok>0 && document.visibilityState==='visible') console.info('Market prices refreshed from Finnhub.');
+}
 function exportCSV(){ const rows=[['Account','Ticker','Name','Shares','Cost','Current Price','Current Value','Gain','Gain %']]; holdings.forEach(h=>rows.push([h.account,h.ticker,h.name,h.qty,h.cost,marketPrice(h),marketValue(h),gain(h),gainPct(h)])); const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n'); download('gonda_portfolio_export.csv',csv,'text/csv'); }
 function exportHTML(){ const html=document.documentElement.outerHTML.replace(/const INITIAL_HOLDINGS = [\s\S]*?;\nconst INITIAL_CASH = [\s\S]*?;\nconst FUNDAMENTALS = [\s\S]*?;\nconst ANALYSIS_RULES = [\s\S]*?;\n/,`const INITIAL_HOLDINGS = ${JSON.stringify(holdings,null,2)};\nconst INITIAL_CASH = ${JSON.stringify(cash,null,2)};\nconst FUNDAMENTALS = ${JSON.stringify(FUNDAMENTALS,null,2)};\nconst ANALYSIS_RULES = ${JSON.stringify(ANALYSIS_RULES,null,2)};\n`); download('index.html','<!doctype html>\n'+html,'text/html'); }
 function download(name,content,type){ const blob=new Blob([content],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
 function renderDiagnostics(){ const d=$('diagnostics'); if(!d) return; const k=getApiKey(); d.innerHTML=`<div class="sumrow"><b>Data version</b><span></span><span class="mono">${DATA_VERSION}</span></div><div class="sumrow"><b>API key</b><span></span><span class="mono">${k?'Saved ending '+k.slice(-4):'Not saved'}</span></div><div class="sumrow"><b>Live quotes loaded</b><span></span><span class="mono">${Object.keys(liveData).length}</span></div><div class="sumrow"><b>Storage</b><span></span><span class="mono">Versioned; old files cannot override this build</span></div><div class="sumrow"><b>URL mode</b><span></span><span class="mono">${location.protocol}</span></div>`; }
-$('refreshBtn').addEventListener('click',refreshLive); $('saveKeyBtn').addEventListener('click',()=>{ const k=$('apiKeyInput').value.trim(); if(!k){alert('Paste key first.');return;} localStorage.setItem(API_KEY_STORAGE,k); $('apiKeyInput').value=''; refreshKeyStatus(); $('statusPill').textContent='Finnhub API key saved'; renderDiagnostics(); }); $('testKeyBtn').addEventListener('click',testKey); $('clearKeyBtn').addEventListener('click',()=>{ localStorage.removeItem(API_KEY_STORAGE); refreshKeyStatus(); renderDiagnostics(); }); $('saveHoldingBtn').addEventListener('click',saveHolding); $('clearFormBtn').addEventListener('click',clearForm); $('resetEditsBtn').addEventListener('click',resetEdits); $('exportCsvBtn').addEventListener('click',exportCSV); $('exportHtmlBtn').addEventListener('click',exportHTML); ['searchBox','accountFilter','modeFilter'].forEach(id=>$(id).addEventListener('input',renderHoldings));
-refreshKeyStatus(); renderAll(); setTab('overview'); setInterval(marketStatus,60000);
+$('refreshBtn').addEventListener('click',refreshLive); $('saveKeyBtn').addEventListener('click',()=>{ const k=$('apiKeyInput').value.trim(); if(!k){alert('Paste key first.');return;} localStorage.setItem(API_KEY_STORAGE,k); $('apiKeyInput').value=''; refreshKeyStatus(); setStatus('Finnhub API key saved'); renderDiagnostics(); startAutoRefresh(); }); $('testKeyBtn').addEventListener('click',testKey); $('clearKeyBtn').addEventListener('click',()=>{ localStorage.removeItem(API_KEY_STORAGE); if(autoRefreshTimer) clearTimeout(autoRefreshTimer); nextAutoRefreshAt=null; refreshKeyStatus(); renderDiagnostics(); updateAutoCountdown(); }); $('saveHoldingBtn').addEventListener('click',saveHolding); $('clearFormBtn').addEventListener('click',clearForm); $('resetEditsBtn').addEventListener('click',resetEdits); $('exportCsvBtn').addEventListener('click',exportCSV); $('exportHtmlBtn').addEventListener('click',exportHTML); ['searchBox','accountFilter','modeFilter'].forEach(id=>$(id).addEventListener('input',renderHoldings));
+refreshKeyStatus(); renderAll(); setTab('overview'); setInterval(marketStatus,60000); startAutoRefresh(); document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && getApiKey() && (!nextAutoRefreshAt || nextAutoRefreshAt < Date.now())) scheduleAutoRefresh(3000); });
 </script>
 </body></html>
