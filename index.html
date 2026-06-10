@@ -20,7 +20,30 @@
 <main class="container">
 <section class="notice blue"><b>Stable Pro V9:</b> Overview Losses Only view. Current market prices and values refresh from Finnhub every 5 minutes; API setup is kept under API / Settings.</section>
 
-<section id="overview" class="tab active"><div class="grid kpis" id="kpiGrid"></div><div class="grid twocol" style="margin-top:18px"><div class="card"><h3>Portfolio Value — current market view</h3><div class="chartBox"><canvas id="valueChart"></canvas></div></div><div class="card"><h3>Top holdings concentration — live market pulse</h3><div id="topHoldings" class="summaryList"></div><div class="miniNote">Shows current price, current market value, and allocation by ticker.</div></div></div><div class="card" style="margin-top:18px"><h3>Loss positions watchlist — live price, value & allocation</h3><div class="tablewrap"><table class="pulseTable"><thead><tr><th>Ticker</th><th>Company</th><th>Shares</th><th>Current Price</th><th>Current Value</th><th>Allocation %</th><th>Gain/Loss</th><th>Source</th></tr></thead><tbody id="overviewHoldingsBody"></tbody></table></div></div></section>
+<section id="overview" class="tab active">
+  <div class="grid kpis" id="kpiGrid"></div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>Top holdings concentration — gainers over 10%</h3>
+    <div class="tablewrap">
+      <table class="pulseTable">
+        <thead>
+          <tr>
+            <th>Ticker</th><th>Company</th><th>Shares</th><th>Current Price</th><th>Current Value</th><th>Allocation %</th><th>Gain/Loss</th><th>Source</th>
+          </tr>
+        </thead>
+        <tbody id="topHoldings"></tbody>
+      </table>
+    </div>
+    <div class="miniNote">Shows only green gain positions with gain/loss percentage greater than 10%, sorted by highest gain % first.</div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>Loss positions watchlist — live price, value & allocation</h3>
+    <div class="tablewrap"><table class="pulseTable"><thead><tr><th>Ticker</th><th>Company</th><th>Shares</th><th>Current Price</th><th>Current Value</th><th>Allocation %</th><th>Gain/Loss</th><th>Source</th></tr></thead><tbody id="overviewHoldingsBody"></tbody></table></div>
+    <div class="miniNote">Loss positions are sorted by loss severity first.</div>
+  </div>
+</section>
 <section id="holdings" class="tab"><div class="toolbar"><input id="searchBox" placeholder="Search ticker, company, or account"><select id="accountFilter"><option value="">All accounts</option></select><select id="modeFilter"><option value="all">All holdings</option><option value="gain">Gainers</option><option value="loss">Losers</option><option value="variance">Live refreshed only</option></select><button class="btn" id="exportCsvBtn">Export CSV</button></div><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Company</th><th>Account</th><th>Shares</th><th>Avg Cost</th><th>Current Price</th><th>Current Value</th><th>Price Source</th><th>Gain/Loss</th><th>G/L %</th><th>As Of</th></tr></thead><tbody id="holdingsBody"></tbody></table></div></section>
 <section id="analysis" class="tab"><div class="card"><h3>Current holdings analysis</h3><p class="muted">Educational view only; not financial advice. It filters automatically to tickers you currently hold.</p><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Current Value</th><th>Allocation</th><th>Risk</th><th>Action</th><th>Plain-English reason</th></tr></thead><tbody id="analysisBody"></tbody></table></div></div></section>
 <section id="editor" class="tab"><div class="card editor"><h3 id="editorTitle">Add / edit holding</h3><div class="editorGrid"><input id="eTicker" placeholder="Ticker"><input id="eName" placeholder="Company"><input id="eQty" type="number" step="any" placeholder="Shares"><input id="eCost" type="number" step="any" placeholder="Avg cost"><input id="eBrokerPrice" type="number" step="any" placeholder="Current price"><select id="eSector"><option>Technology</option><option>Consumer Discretionary</option><option>Consumer Staples</option><option>Communication Services</option><option>Financials</option><option>Healthcare</option><option>Industrials</option><option>Materials</option><option>Energy</option><option>Utilities</option><option>ETF</option><option>Commodities</option></select><select id="eAccount"></select></div><div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" id="saveHoldingBtn">Save Holding</button><button class="btn" id="clearFormBtn">Clear</button><button class="btn green" id="exportHtmlBtn">Export Updated index.html</button><button class="btn red" id="resetEditsBtn">Reset Browser Edits</button><span id="editMsg" class="muted"></span></div></div><div class="card" style="margin-top:18px"><h3>Current positions by account</h3><p class="muted">Current Price and Current Value are the main portfolio view. After Refresh Live, Finnhub prices are shown where available; otherwise the saved current price is used as fallback.</p><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Company</th><th>Account</th><th>Shares</th><th>Avg Cost</th><th>Current Price</th><th>Current Value</th><th>Price Source</th><th>Actions</th></tr></thead><tbody id="editorBody"></tbody></table></div></div></section>
@@ -746,13 +769,19 @@ function consolidatedTickers(){
 function renderBreakdowns(){
   const total=portfolioTotals().total||1;
   const rows=consolidatedTickers();
-  $('topHoldings').innerHTML=rows.slice(0,10).map(r=>{
-    const alloc=r.value/total*100;
-    return `<div class="sumrow"><b>${r.ticker}</b><div class="bar"><div class="barfill" style="width:${Math.max(2,alloc)}%"></div></div><span class="mono"><b>${money(r.price,2)}</b> · ${money(r.value)} · ${alloc.toFixed(1)}%</span></div>`;
-  }).join('');
+
+  const topBody=$('topHoldings');
+  if(topBody){
+    const gainRows = rows.filter(r=>r.gain>0 && r.gainPct>10).sort((a,b)=>b.gainPct-a.gainPct);
+    topBody.innerHTML = gainRows.length ? gainRows.map(r=>{
+      const alloc=r.value/total*100;
+      return `<tr><td><span class="ticker">${r.ticker}</span></td><td>${r.name}</td><td class="right mono">${num(r.qty,3)}</td><td class="right mono"><b>${money(r.price,2)}</b></td><td class="right mono"><b>${money(r.value)}</b></td><td class="right mono alloc">${alloc.toFixed(1)}%</td><td class="right mono priceUp"><b>${money(r.gain)} · ${pct(r.gainPct)}</b></td><td><span class="badge ${r.source==='Finnhub live'?'live':'warn'}">${r.source}</span></td></tr>`;
+    }).join('') : `<tr><td colspan="8" style="padding:18px;text-align:center;color:var(--muted);font-weight:700">No gain positions above 10% based on current market price vs cost basis.</td></tr>`;
+  }
+
   const body=$('overviewHoldingsBody');
   if(body){
-    const lossRows = rows.filter(r=>r.gain<0);
+    const lossRows = rows.filter(r=>r.gain<0).sort((a,b)=>a.gainPct-b.gainPct);
     body.innerHTML = lossRows.length ? lossRows.map(r=>{
       const alloc=r.value/total*100;
       return `<tr><td><span class="ticker">${r.ticker}</span></td><td>${r.name}</td><td class="right mono">${num(r.qty,3)}</td><td class="right mono"><b>${money(r.price,2)}</b></td><td class="right mono"><b>${money(r.value)}</b></td><td class="right mono alloc">${alloc.toFixed(1)}%</td><td class="right mono priceDown"><b>${money(r.gain)} · ${pct(r.gainPct)}</b></td><td><span class="badge ${r.source==='Finnhub live'?'live':'warn'}">${r.source}</span></td></tr>`;
