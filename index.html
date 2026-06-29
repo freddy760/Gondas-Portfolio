@@ -1,8 +1,7 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>GONDA STOCK PORTFOLIO - Stable Pro V15 Yahoo-Inspired</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -285,12 +284,12 @@
 </style>
 </head>
 <body>
-<header class="top"><div class="topin"><div class="brand"><div class="mark">GS</div><div><div class="title">GONDA STOCK PORTFOLIO</div><div class="sub">My Portfolio • Live Market Prices</div></div></div><nav class="tabs" id="tabs"><button class="tabbtn active" data-tab="overview">Overview</button><button class="tabbtn" data-tab="holdings">Holdings</button><button class="tabbtn" data-tab="analysis">Analysis</button><button class="tabbtn" data-tab="editor">Edit Portfolio</button><button class="tabbtn" data-tab="settings">API / Settings</button></nav><div class="actions"><span class="pill mono" id="marketPill">Market</span><span class="pill mono" id="statusPill">Snapshot mode</span><span class="pill mono" id="autoPill" style="background:#ecfdf5;color:#047857;border-color:#86efac">Auto: checking</span><button class="btn primary" id="refreshBtn">↻ Refresh Live</button></div></div></header>
+<header class="top"><div class="topin"><div class="brand"><div class="mark">GS</div><div><div class="title">GONDA STOCK PORTFOLIO</div><div class="sub">My Portfolio • Live Market Prices</div></div></div><nav class="tabs" id="tabs"><button class="tabbtn" data-tab="overview">Overview</button><button class="tabbtn" data-tab="holdings">Holdings</button><button class="tabbtn" data-tab="analysis">Analysis</button><button class="tabbtn active" data-tab="editor">Edit Portfolio</button><button class="tabbtn" data-tab="settings">API / Settings</button></nav><div class="actions"><span class="pill mono" id="marketPill" style="color: var(--green);">● Market Open</span><span class="pill mono" id="statusPill">✓ Fresh 16/16 · Live $431,820 · 09:59 AM</span><span class="pill mono" id="autoPill" style="background: rgb(236, 253, 245); color: rgb(4, 120, 87); border-color: rgb(134, 239, 172);">Auto in 4:58</span><button class="btn primary" id="refreshBtn">↻ Refresh Live</button></div></div></header>
 <main class="container">
 
 
-<section id="overview" class="tab active">
-  <div class="grid kpis" id="kpiGrid"></div>
+<section id="overview" class="tab">
+  <div class="grid kpis" id="kpiGrid"><div class="card"><div class="klabel">Portfolio Value</div><div class="kval blueTxt">$431,820</div><div class="ksub">Current market value + cash</div></div><div class="card"><div class="klabel">Live Value</div><div class="kval">$431,820</div><div class="ksub">Uses Finnhub after refresh</div></div><div class="card"><div class="klabel">Total Invested</div><div class="kval">$214,878</div><div class="ksub">Cost basis excluding cash</div></div><div class="card"><div class="klabel">Unrealized Gain</div><div class="kval greenTxt">$214,315</div><div class="ksub">+99.7% vs cost</div></div><div class="card"><div class="klabel">Positions</div><div class="kval">22</div><div class="ksub">3 accounts</div></div><div class="card"><div class="klabel">Largest Holding</div><div class="kval redTxt">TSLA 32.8%</div><div class="ksub">Concentration monitor</div></div></div>
 
   <div class="card" style="margin-top:18px">
     <h3>Top holdings concentration — gainers over 10%</h3>
@@ -301,22 +300,22 @@
             <th>Ticker</th><th>Company</th><th>Shares</th><th>Current Price</th><th>Current Value</th><th>Allocation %</th><th>Gain/Loss</th><th>Source</th>
           </tr>
         </thead>
-        <tbody id="topHoldings"></tbody>
+        <tbody id="topHoldings"><tr><td><span class="ticker">META</span></td><td>Meta Platforms Inc.</td><td class="right mono">10.080</td><td class="right mono"><b>$565.17</b></td><td class="right mono"><b>$5,697</b></td><td class="right mono alloc">1.3%</td><td class="right mono priceUp"><b>$4,216 · +284.7%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">TSLA</span></td><td>Tesla Inc.</td><td class="right mono">356.000</td><td class="right mono"><b>$397.32</b></td><td class="right mono"><b>$141,446</b></td><td class="right mono alloc">32.8%</td><td class="right mono priceUp"><b>$104,136 · +279.1%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">GOOGL</span></td><td>Alphabet Inc.</td><td class="right mono">60.490</td><td class="right mono"><b>$350.00</b></td><td class="right mono"><b>$21,172</b></td><td class="right mono alloc">4.9%</td><td class="right mono priceUp"><b>$14,411 · +213.1%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">AAPL</span></td><td>Apple Inc.</td><td class="right mono">61.000</td><td class="right mono"><b>$282.15</b></td><td class="right mono"><b>$17,211</b></td><td class="right mono alloc">4.0%</td><td class="right mono priceUp"><b>$11,032 · +178.5%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">MU</span></td><td>Micron Technology Inc.</td><td class="right mono">66.807</td><td class="right mono"><b>$1,062.39</b></td><td class="right mono"><b>$70,975</b></td><td class="right mono alloc">16.4%</td><td class="right mono priceUp"><b>$38,250 · +116.9%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">AMZN</span></td><td>Amazon.com Inc.</td><td class="right mono">145.000</td><td class="right mono"><b>$244.50</b></td><td class="right mono"><b>$35,453</b></td><td class="right mono alloc">8.2%</td><td class="right mono priceUp"><b>$15,484 · +77.5%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">VUG</span></td><td>Vanguard Growth ETF</td><td class="right mono">104.290</td><td class="right mono"><b>$84.34</b></td><td class="right mono"><b>$8,796</b></td><td class="right mono alloc">2.0%</td><td class="right mono priceUp"><b>$3,375 · +62.3%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">MRVL</span></td><td>Marvell Technology Inc.</td><td class="right mono">219.405</td><td class="right mono"><b>$259.70</b></td><td class="right mono"><b>$56,979</b></td><td class="right mono alloc">13.2%</td><td class="right mono priceUp"><b>$20,885 · +57.9%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">GE</span></td><td>GE Aerospace</td><td class="right mono">35.169</td><td class="right mono"><b>$375.26</b></td><td class="right mono"><b>$13,198</b></td><td class="right mono alloc">3.1%</td><td class="right mono priceUp"><b>$4,248 · +47.5%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">NVDA</span></td><td>NVIDIA Corporation</td><td class="right mono">103.043</td><td class="right mono"><b>$194.49</b></td><td class="right mono"><b>$20,041</b></td><td class="right mono alloc">4.6%</td><td class="right mono priceUp"><b>$5,530 · +38.1%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">WMT</span></td><td>Walmart Inc.</td><td class="right mono">11.240</td><td class="right mono"><b>$115.15</b></td><td class="right mono"><b>$1,294</b></td><td class="right mono alloc">0.3%</td><td class="right mono priceUp"><b>$239 · +22.7%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">PHYS</span></td><td>Sprott Physical Gold Trust</td><td class="right mono">200.000</td><td class="right mono"><b>$30.31</b></td><td class="right mono"><b>$6,062</b></td><td class="right mono alloc">1.4%</td><td class="right mono priceUp"><b>$1,061 · +21.2%</b></td><td><span class="badge live">Finnhub live</span></td></tr></tbody>
       </table>
     </div>
     <div class="miniNote">Shows only green gain positions with gain/loss percentage greater than 10%, sorted by highest gain % first.</div>
   </div>
 
   <div class="card" style="margin-top:18px">
-    <h3>Loss positions watchlist — live price, value & allocation</h3>
-    <div class="tablewrap"><table class="pulseTable"><thead><tr><th>Ticker</th><th>Company</th><th>Shares</th><th>Current Price</th><th>Current Value</th><th>Allocation %</th><th>Gain/Loss</th><th>Source</th></tr></thead><tbody id="overviewHoldingsBody"></tbody></table></div>
+    <h3>Loss positions watchlist — live price, value &amp; allocation</h3>
+    <div class="tablewrap"><table class="pulseTable"><thead><tr><th>Ticker</th><th>Company</th><th>Shares</th><th>Current Price</th><th>Current Value</th><th>Allocation %</th><th>Gain/Loss</th><th>Source</th></tr></thead><tbody id="overviewHoldingsBody"><tr><td><span class="ticker">OKLO</span></td><td>Oklo Inc.</td><td class="right mono">60.000</td><td class="right mono"><b>$51.43</b></td><td class="right mono"><b>$3,086</b></td><td class="right mono alloc">0.7%</td><td class="right mono priceDown"><b>-$1,529 · -33.1%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">RKLB</span></td><td>Rocket</td><td class="right mono">210.000</td><td class="right mono"><b>$91.73</b></td><td class="right mono"><b>$19,263</b></td><td class="right mono alloc">4.5%</td><td class="right mono priceDown"><b>-$5,563 · -22.4%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">MP</span></td><td>MP Materials Corp.</td><td class="right mono">70.000</td><td class="right mono"><b>$53.08</b></td><td class="right mono"><b>$3,716</b></td><td class="right mono alloc">0.9%</td><td class="right mono priceDown"><b>-$900 · -19.5%</b></td><td><span class="badge live">Finnhub live</span></td></tr><tr><td><span class="ticker">SPCX</span></td><td>SPACE</td><td class="right mono">30.902</td><td class="right mono"><b>$155.50</b></td><td class="right mono"><b>$4,805</b></td><td class="right mono alloc">1.1%</td><td class="right mono priceDown"><b>-$561 · -10.5%</b></td><td><span class="badge live">Finnhub live</span></td></tr></tbody></table></div>
     <div class="miniNote">Loss positions are sorted by loss severity first.</div>
   </div>
 </section>
-<section id="holdings" class="tab"><div class="toolbar"><input id="searchBox" placeholder="Search ticker, company, or account"><select id="accountFilter"><option value="">All accounts</option></select><select id="modeFilter"><option value="all">All holdings</option><option value="gain">Gainers</option><option value="loss">Losers</option><option value="variance">Live refreshed only</option></select><button class="btn" id="exportCsvBtn">Export CSV</button></div><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Company</th><th>Account</th><th>Shares</th><th>Avg Cost</th><th>Current Price</th><th>Current Value</th><th>Price Source</th><th>Gain/Loss</th><th>G/L %</th><th>As Of</th></tr></thead><tbody id="holdingsBody"></tbody></table></div></section>
-<section id="analysis" class="tab"><div class="card"><h3>Current holdings analysis</h3><p class="muted">Educational view only; not financial advice. It filters automatically to tickers you currently hold.</p><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Current Value</th><th>Allocation</th><th>Risk</th><th>Action</th><th>Plain-English reason</th></tr></thead><tbody id="analysisBody"></tbody></table></div></div></section>
-<section id="editor" class="tab"><div class="card editor"><h3 id="editorTitle">Add / edit holding</h3><p class="muted" style="margin-top:4px">Current price is optional — leave it blank and Refresh Live will update it from Finnhub.</p><div class="editorGrid"><input id="eTicker" placeholder="Ticker"><input id="eName" placeholder="Company"><input id="eQty" type="number" step="any" placeholder="Shares"><input id="eCost" type="number" step="any" placeholder="Avg cost"><input id="eBrokerPrice" type="number" step="any" placeholder="Current price (optional)"><select id="eSector"><option>Technology</option><option>Consumer Discretionary</option><option>Consumer Staples</option><option>Communication Services</option><option>Financials</option><option>Healthcare</option><option>Industrials</option><option>Materials</option><option>Energy</option><option>Utilities</option><option>ETF</option><option>Commodities</option></select><select id="eAccount"></select></div><div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" id="saveHoldingBtn">Save Holding</button><button class="btn" id="clearFormBtn">Clear</button><button class="btn green" id="exportHtmlBtn">Export Updated index.html</button><button class="btn red" id="resetEditsBtn">Reset Browser Edits</button><span id="editMsg" class="muted"></span></div></div><div class="card" style="margin-top:18px"><h3>Current positions by account</h3><p class="muted">Current Price and Current Value are the main portfolio view. After Refresh Live, Finnhub prices are shown where available; otherwise the saved current price is used as fallback.</p><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Company</th><th>Account</th><th>Shares</th><th>Avg Cost</th><th>Current Price</th><th>Current Value</th><th>Price Source</th><th>Actions</th></tr></thead><tbody id="editorBody"></tbody></table></div></div></section>
-<section id="settings" class="tab"><section id="apiPanel" class="notice"><b>🔑 Current Price Refresh Setup</b><div class="muted">Paste your Finnhub key once per browser. The key is stored only in your browser localStorage, not inside exported portfolio data.</div><div class="apirow"><input id="apiKeyInput" placeholder="Paste Finnhub API key here" autocomplete="off"><button class="btn orange" id="saveKeyBtn">Save Key</button><button class="btn primary" id="testKeyBtn">Test TSLA</button><button class="btn red" id="clearKeyBtn">Clear Key</button><span id="keyStatus" class="mono muted">No private key saved</span></div></section><div class="card"><h3>System status</h3><div id="diagnostics" class="summaryList"></div></div></section>
+<section id="holdings" class="tab"><div class="toolbar"><input id="searchBox" placeholder="Search ticker, company, or account"><select id="accountFilter"><option value="">All accounts</option><option>Equitable Anahita</option><option>Equitable Fred</option><option>Fidelity</option></select><select id="modeFilter"><option value="all">All holdings</option><option value="gain">Gainers</option><option value="loss">Losers</option><option value="variance">Live refreshed only</option></select><button class="btn" id="exportCsvBtn">Export CSV</button></div><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Company</th><th>Account</th><th>Shares</th><th>Avg Cost</th><th>Current Price</th><th>Current Value</th><th>Price Source</th><th>Gain/Loss</th><th>G/L %</th><th>As Of</th></tr></thead><tbody id="holdingsBody"><tr class="accountHead"><td colspan="11">Equitable Anahita — 5 positions</td></tr><tr><td><span class="ticker">GE</span></td><td>GE Aerospace</td><td><span class="badge live">Equitable Anahita</span></td><td class="right mono">17.069</td><td class="right mono">$275.17</td><td class="right mono"><b>$375.26</b></td><td class="right mono"><b>$6,405</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$1,708</b></td><td class="right mono greenTxt"><b>+36.4%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">MP</span></td><td>MP Materials Corp.</td><td><span class="badge live">Equitable Anahita</span></td><td class="right mono">70.000</td><td class="right mono">$65.93</td><td class="right mono"><b>$53.08</b></td><td class="right mono"><b>$3,716</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono redTxt"><b>-$900</b></td><td class="right mono redTxt"><b>-19.5%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">MU</span></td><td>Micron Technology Inc.</td><td><span class="badge live">Equitable Anahita</span></td><td class="right mono">11.000</td><td class="right mono">$457.25</td><td class="right mono"><b>$1,062.39</b></td><td class="right mono"><b>$11,686</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$6,657</b></td><td class="right mono greenTxt"><b>+132.3%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">NVDA</span></td><td>NVIDIA Corporation</td><td><span class="badge live">Equitable Anahita</span></td><td class="right mono">25.003</td><td class="right mono">$178.58</td><td class="right mono"><b>$194.49</b></td><td class="right mono"><b>$4,863</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$398</b></td><td class="right mono greenTxt"><b>+8.9%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">OKLO</span></td><td>Oklo Inc.</td><td><span class="badge live">Equitable Anahita</span></td><td class="right mono">60.000</td><td class="right mono">$76.92</td><td class="right mono"><b>$51.43</b></td><td class="right mono"><b>$3,086</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono redTxt"><b>-$1,529</b></td><td class="right mono redTxt"><b>-33.1%</b></td><td class="mono muted">09:59 AM</td></tr><tr class="cash"><td colspan="6">Cash / money market</td><td class="right mono"><b>$792.26</b></td><td colspan="4"></td></tr><tr class="subtotal"><td colspan="4">Equitable Anahita subtotal</td><td class="right mono">$23,422</td><td></td><td class="right mono">$30,548</td><td></td><td class="right mono greenTxt">$6,333</td><td class="right mono">7.1%</td><td></td></tr><tr class="accountHead"><td colspan="11">Equitable Fred — 13 positions</td></tr><tr><td><span class="ticker">AAPL</span></td><td>Apple Inc.</td><td><span class="badge live">Equitable Fred</span></td><td class="right mono">61.000</td><td class="right mono">$101.30</td><td class="right mono"><b>$282.15</b></td><td class="right mono"><b>$17,211</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$11,032</b></td><td class="right mono greenTxt"><b>+178.5%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">AMZN</span></td><td>Amazon.com Inc.</td><td><span class="badge live">Equitable Fred</span></td><td class="right mono">145.000</td><td class="right mono">$137.72</td><td class="right mono"><b>$244.50</b></td><td class="right mono"><b>$35,453</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$15,484</b></td><td class="right mono greenTxt"><b>+77.5%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">GE</span></td><td>GE Aerospace</td><td><span class="badge live">Equitable Fred</span></td><td class="right mono">18.100</td><td class="right mono">$235.00</td><td class="right mono"><b>$375.26</b></td><td class="right mono"><b>$6,792</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$2,539</b></td><td class="right mono greenTxt"><b>+59.7%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">GOOGL</span></td><td>Alphabet Inc.</td><td><span class="badge live">Equitable Fred</span></td><td class="right mono">60.490</td><td class="right mono">$111.78</td><td class="right mono"><b>$350.00</b></td><td class="right mono"><b>$21,172</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$14,411</b></td><td class="right mono greenTxt"><b>+213.1%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">META</span></td><td>Meta Platforms Inc.</td><td><span class="badge live">Equitable Fred</span></td><td class="right mono">10.080</td><td class="right mono">$146.96</td><td class="right mono"><b>$565.17</b></td><td class="right mono"><b>$5,697</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$4,216</b></td><td class="right mono greenTxt"><b>+284.7%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">MRVL</span></td><td>Marvell Technology Inc.</td><td><span class="badge live">Equitable Fred</span></td><td class="right mono">206.000</td><td class="right mono">$159.11</td><td class="right mono"><b>$259.70</b></td><td class="right mono"><b>$53,498</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$20,723</b></td><td class="right mono greenTxt"><b>+63.2%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">MU</span></td><td>Micron Technology Inc.</td><td><span class="badge live">Equitable Fred</span></td><td class="right mono">52.000</td><td class="right mono">$455.69</td><td class="right mono"><b>$1,062.39</b></td><td class="right mono"><b>$55,244</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$31,549</b></td><td class="right mono greenTxt"><b>+133.1%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">NVDA</span></td><td>NVIDIA Corporation</td><td><span class="badge live">Equitable Fred</span></td><td class="right mono">78.040</td><td class="right mono">$128.73</td><td class="right mono"><b>$194.49</b></td><td class="right mono"><b>$15,178</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$5,133</b></td><td class="right mono greenTxt"><b>+51.1%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">PHYS</span></td><td>Sprott Physical Gold Trust</td><td><span class="badge live">Equitable Fred</span></td><td class="right mono">200.000</td><td class="right mono">$25.01</td><td class="right mono"><b>$30.31</b></td><td class="right mono"><b>$6,062</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$1,061</b></td><td class="right mono greenTxt"><b>+21.2%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">RKLB</span></td><td>Rocket</td><td><span class="badge live">Equitable Fred</span></td><td class="right mono">210.000</td><td class="right mono">$118.22</td><td class="right mono"><b>$91.73</b></td><td class="right mono"><b>$19,263</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono redTxt"><b>-$5,563</b></td><td class="right mono redTxt"><b>-22.4%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">TSLA</span></td><td>Tesla Inc.</td><td><span class="badge live">Equitable Fred</span></td><td class="right mono">356.000</td><td class="right mono">$104.80</td><td class="right mono"><b>$397.32</b></td><td class="right mono"><b>$141,446</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$104,136</b></td><td class="right mono greenTxt"><b>+279.1%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">VUG</span></td><td>Vanguard Growth ETF</td><td><span class="badge live">Equitable Fred</span></td><td class="right mono">104.290</td><td class="right mono">$51.98</td><td class="right mono"><b>$84.34</b></td><td class="right mono"><b>$8,796</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$3,375</b></td><td class="right mono greenTxt"><b>+62.3%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">WMT</span></td><td>Walmart Inc.</td><td><span class="badge live">Equitable Fred</span></td><td class="right mono">11.240</td><td class="right mono">$93.87</td><td class="right mono"><b>$115.15</b></td><td class="right mono"><b>$1,294</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$239</b></td><td class="right mono greenTxt"><b>+22.7%</b></td><td class="mono muted">09:59 AM</td></tr><tr class="cash"><td colspan="6">Cash / money market</td><td class="right mono"><b>$1,444.81</b></td><td colspan="4"></td></tr><tr class="subtotal"><td colspan="4">Equitable Fred subtotal</td><td class="right mono">$178,772</td><td></td><td class="right mono">$388,551</td><td></td><td class="right mono greenTxt">$208,335</td><td class="right mono">90.0%</td><td></td></tr><tr class="accountHead"><td colspan="11">Fidelity — 4 positions</td></tr><tr><td><span class="ticker">MRVL</span></td><td>Marvell Technology Inc.</td><td><span class="badge live">Fidelity</span></td><td class="right mono">13.405</td><td class="right mono">$247.56</td><td class="right mono"><b>$259.70</b></td><td class="right mono"><b>$3,481</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$163</b></td><td class="right mono greenTxt"><b>+4.9%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">MU</span></td><td>Micron Technology Inc.</td><td><span class="badge live">Fidelity</span></td><td class="right mono">3.807</td><td class="right mono">$1,050.46</td><td class="right mono"><b>$1,062.39</b></td><td class="right mono"><b>$4,045</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono greenTxt"><b>$45</b></td><td class="right mono greenTxt"><b>+1.1%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">SPCX</span></td><td>SPACE</td><td><span class="badge live">Fidelity</span></td><td class="right mono">26.000</td><td class="right mono">$167.93</td><td class="right mono"><b>$155.50</b></td><td class="right mono"><b>$4,043</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono redTxt"><b>-$323</b></td><td class="right mono redTxt"><b>-7.4%</b></td><td class="mono muted">09:59 AM</td></tr><tr><td><span class="ticker">SPCX</span></td><td>SPACE</td><td><span class="badge live">Fidelity</span></td><td class="right mono">4.902</td><td class="right mono">$203.99</td><td class="right mono"><b>$155.50</b></td><td class="right mono"><b>$762</b></td><td><span class="badge live">Finnhub live</span></td><td class="right mono redTxt"><b>-$238</b></td><td class="right mono redTxt"><b>-23.8%</b></td><td class="mono muted">09:59 AM</td></tr><tr class="cash"><td colspan="6">Cash / money market</td><td class="right mono"><b>$390.05</b></td><td colspan="4"></td></tr><tr class="subtotal"><td colspan="4">Fidelity subtotal</td><td class="right mono">$12,684</td><td></td><td class="right mono">$12,721</td><td></td><td class="right mono redTxt">-$353</td><td class="right mono">2.9%</td><td></td></tr><tr class="grand"><td colspan="4">GRAND TOTAL</td><td class="right mono">$214,878</td><td></td><td class="right mono">$431,820</td><td></td><td class="right mono greenTxt">$214,315</td><td class="right mono">100.0%</td><td></td></tr></tbody></table></div></section>
+<section id="analysis" class="tab"><div class="card"><h3>Current holdings analysis</h3><p class="muted">Educational view only; not financial advice. It filters automatically to tickers you currently hold.</p><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Current Value</th><th>Allocation</th><th>Risk</th><th>Action</th><th>Plain-English reason</th></tr></thead><tbody id="analysisBody"><tr><td><span class="ticker">TSLA</span></td><td class="right mono">$141,446</td><td class="right mono">32.8%</td><td><span class="badge warn">High</span></td><td><b>Hold / Trim gradually</b></td><td>Still the largest position; keep concentration under personal risk limit.</td></tr><tr><td><span class="ticker">MU</span></td><td class="right mono">$70,975</td><td class="right mono">16.4%</td><td><span class="badge warn">Medium</span></td><td><b>Hold</b></td><td>Large semiconductor exposure; volatile and should be monitored.</td></tr><tr><td><span class="ticker">MRVL</span></td><td class="right mono">$56,979</td><td class="right mono">13.2%</td><td><span class="badge warn">Medium</span></td><td><b>Hold</b></td><td>Strong position; compare live value with market reference after each transaction.</td></tr><tr><td><span class="ticker">AMZN</span></td><td class="right mono">$35,453</td><td class="right mono">8.2%</td><td><span class="badge warn">Medium</span></td><td><b>Hold / Add on weakness</b></td><td>Diversified growth through AWS, retail and advertising.</td></tr><tr><td><span class="ticker">GOOGL</span></td><td class="right mono">$21,172</td><td class="right mono">4.9%</td><td><span class="badge warn">Medium</span></td><td><b>Hold</b></td><td>Core technology holding with AI and advertising exposure.</td></tr><tr><td><span class="ticker">NVDA</span></td><td class="right mono">$20,041</td><td class="right mono">4.6%</td><td><span class="badge warn">High</span></td><td><b>Hold</b></td><td>AI leader but volatile valuation.</td></tr><tr><td><span class="ticker">RKLB</span></td><td class="right mono">$19,263</td><td class="right mono">4.5%</td><td><span class="badge warn">High</span></td><td><b>Speculative Hold</b></td><td>Newer growth/speculative position; keep position size controlled.</td></tr><tr><td><span class="ticker">AAPL</span></td><td class="right mono">$17,211</td><td class="right mono">4.0%</td><td><span class="badge warn">Low</span></td><td><b>Hold</b></td><td>Core quality technology holding.</td></tr><tr><td><span class="ticker">GE</span></td><td class="right mono">$13,198</td><td class="right mono">3.1%</td><td><span class="badge warn">Medium</span></td><td><b>Hold</b></td><td>Industrial/aerospace diversification.</td></tr><tr><td><span class="ticker">VUG</span></td><td class="right mono">$8,796</td><td class="right mono">2.0%</td><td><span class="badge warn">Low</span></td><td><b>Hold</b></td><td>Diversified growth ETF.</td></tr><tr><td><span class="ticker">PHYS</span></td><td class="right mono">$6,062</td><td class="right mono">1.4%</td><td><span class="badge warn">Low</span></td><td><b>Hold</b></td><td>Gold hedge; useful diversifier.</td></tr><tr><td><span class="ticker">META</span></td><td class="right mono">$5,697</td><td class="right mono">1.3%</td><td><span class="badge warn">Medium</span></td><td><b>Hold</b></td><td>Strong gain; monitor position size.</td></tr><tr><td><span class="ticker">SPCX</span></td><td class="right mono">$4,805</td><td class="right mono">1.1%</td><td><span class="badge warn">Medium</span></td><td><b>Review</b></td><td>No rule yet; review manually.</td></tr><tr><td><span class="ticker">MP</span></td><td class="right mono">$3,716</td><td class="right mono">0.9%</td><td><span class="badge warn">High</span></td><td><b>Speculative Hold</b></td><td>Rare earths exposure; high volatility.</td></tr><tr><td><span class="ticker">OKLO</span></td><td class="right mono">$3,086</td><td class="right mono">0.7%</td><td><span class="badge warn">High</span></td><td><b>Speculative Hold</b></td><td>Early nuclear/energy theme; high risk.</td></tr><tr><td><span class="ticker">WMT</span></td><td class="right mono">$1,294</td><td class="right mono">0.3%</td><td><span class="badge warn">Low</span></td><td><b>Hold</b></td><td>Defensive consumer staple.</td></tr></tbody></table></div></div></section>
+<section id="editor" class="tab active"><div class="card editor"><h3 id="editorTitle">Add / edit holding</h3><p class="muted" style="margin-top:4px">Current price is optional — leave it blank and Refresh Live will update it from Finnhub.</p><div class="editorGrid"><input id="eTicker" placeholder="Ticker"><input id="eName" placeholder="Company"><input id="eQty" type="number" step="any" placeholder="Shares"><input id="eCost" type="number" step="any" placeholder="Avg cost"><input id="eBrokerPrice" type="number" step="any" placeholder="Current price (optional)"><select id="eSector"><option>Technology</option><option>Consumer Discretionary</option><option>Consumer Staples</option><option>Communication Services</option><option>Financials</option><option>Healthcare</option><option>Industrials</option><option>Materials</option><option>Energy</option><option>Utilities</option><option>ETF</option><option>Commodities</option></select><select id="eAccount"><option>Equitable Anahita</option><option>Equitable Fred</option><option>Fidelity</option></select></div><div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" id="saveHoldingBtn">Save Holding</button><button class="btn" id="clearFormBtn">Clear</button><button class="btn green" id="exportHtmlBtn">Export Updated index.html</button><button class="btn red" id="resetEditsBtn">Reset Browser Edits</button><span id="editMsg" class="muted" style="color: var(--green);">Saved. Click Refresh Live to update current market price, then Export Updated index.html to make it permanent.</span></div></div><div class="card" style="margin-top:18px"><h3>Current positions by account</h3><p class="muted">Current Price and Current Value are the main portfolio view. After Refresh Live, Finnhub prices are shown where available; otherwise the saved current price is used as fallback.</p><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Company</th><th>Account</th><th>Shares</th><th>Avg Cost</th><th>Current Price</th><th>Current Value</th><th>Price Source</th><th>Actions</th></tr></thead><tbody id="editorBody"><tr><td><span class="ticker">GE</span></td><td>GE Aerospace</td><td>Equitable Anahita</td><td class="right mono">17.069</td><td class="right mono">$275.17</td><td class="right mono"><b>$375.26</b></td><td class="right mono"><b>$6,405</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Anahita|GE')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Anahita|GE')">Remove</button></td></tr><tr><td><span class="ticker">MP</span></td><td>MP Materials Corp.</td><td>Equitable Anahita</td><td class="right mono">70.000</td><td class="right mono">$65.93</td><td class="right mono"><b>$53.08</b></td><td class="right mono"><b>$3,716</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Anahita|MP')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Anahita|MP')">Remove</button></td></tr><tr><td><span class="ticker">MU</span></td><td>Micron Technology Inc.</td><td>Equitable Anahita</td><td class="right mono">11.000</td><td class="right mono">$457.25</td><td class="right mono"><b>$1,062.39</b></td><td class="right mono"><b>$11,686</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Anahita|MU')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Anahita|MU')">Remove</button></td></tr><tr><td><span class="ticker">NVDA</span></td><td>NVIDIA Corporation</td><td>Equitable Anahita</td><td class="right mono">25.003</td><td class="right mono">$178.58</td><td class="right mono"><b>$194.49</b></td><td class="right mono"><b>$4,863</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Anahita|NVDA')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Anahita|NVDA')">Remove</button></td></tr><tr><td><span class="ticker">OKLO</span></td><td>Oklo Inc.</td><td>Equitable Anahita</td><td class="right mono">60.000</td><td class="right mono">$76.92</td><td class="right mono"><b>$51.43</b></td><td class="right mono"><b>$3,086</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Anahita|OKLO')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Anahita|OKLO')">Remove</button></td></tr><tr><td><span class="ticker">AAPL</span></td><td>Apple Inc.</td><td>Equitable Fred</td><td class="right mono">61.000</td><td class="right mono">$101.30</td><td class="right mono"><b>$282.15</b></td><td class="right mono"><b>$17,211</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Fred|AAPL')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Fred|AAPL')">Remove</button></td></tr><tr><td><span class="ticker">AMZN</span></td><td>Amazon.com Inc.</td><td>Equitable Fred</td><td class="right mono">145.000</td><td class="right mono">$137.72</td><td class="right mono"><b>$244.50</b></td><td class="right mono"><b>$35,453</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Fred|AMZN')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Fred|AMZN')">Remove</button></td></tr><tr><td><span class="ticker">GE</span></td><td>GE Aerospace</td><td>Equitable Fred</td><td class="right mono">18.100</td><td class="right mono">$235.00</td><td class="right mono"><b>$375.26</b></td><td class="right mono"><b>$6,792</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Fred|GE')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Fred|GE')">Remove</button></td></tr><tr><td><span class="ticker">GOOGL</span></td><td>Alphabet Inc.</td><td>Equitable Fred</td><td class="right mono">60.490</td><td class="right mono">$111.78</td><td class="right mono"><b>$350.00</b></td><td class="right mono"><b>$21,172</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Fred|GOOGL')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Fred|GOOGL')">Remove</button></td></tr><tr><td><span class="ticker">META</span></td><td>Meta Platforms Inc.</td><td>Equitable Fred</td><td class="right mono">10.080</td><td class="right mono">$146.96</td><td class="right mono"><b>$565.17</b></td><td class="right mono"><b>$5,697</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Fred|META')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Fred|META')">Remove</button></td></tr><tr><td><span class="ticker">MRVL</span></td><td>Marvell Technology Inc.</td><td>Equitable Fred</td><td class="right mono">206.000</td><td class="right mono">$159.11</td><td class="right mono"><b>$259.70</b></td><td class="right mono"><b>$53,498</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Fred|MRVL')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Fred|MRVL')">Remove</button></td></tr><tr><td><span class="ticker">MU</span></td><td>Micron Technology Inc.</td><td>Equitable Fred</td><td class="right mono">52.000</td><td class="right mono">$455.69</td><td class="right mono"><b>$1,062.39</b></td><td class="right mono"><b>$55,244</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Fred|MU')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Fred|MU')">Remove</button></td></tr><tr><td><span class="ticker">NVDA</span></td><td>NVIDIA Corporation</td><td>Equitable Fred</td><td class="right mono">78.040</td><td class="right mono">$128.73</td><td class="right mono"><b>$194.49</b></td><td class="right mono"><b>$15,178</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Fred|NVDA')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Fred|NVDA')">Remove</button></td></tr><tr><td><span class="ticker">PHYS</span></td><td>Sprott Physical Gold Trust</td><td>Equitable Fred</td><td class="right mono">200.000</td><td class="right mono">$25.01</td><td class="right mono"><b>$30.31</b></td><td class="right mono"><b>$6,062</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Fred|PHYS')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Fred|PHYS')">Remove</button></td></tr><tr><td><span class="ticker">RKLB</span></td><td>Rocket</td><td>Equitable Fred</td><td class="right mono">210.000</td><td class="right mono">$118.22</td><td class="right mono"><b>$91.73</b></td><td class="right mono"><b>$19,263</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Fred|RKLB')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Fred|RKLB')">Remove</button></td></tr><tr><td><span class="ticker">TSLA</span></td><td>Tesla Inc.</td><td>Equitable Fred</td><td class="right mono">356.000</td><td class="right mono">$104.80</td><td class="right mono"><b>$397.32</b></td><td class="right mono"><b>$141,446</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Fred|TSLA')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Fred|TSLA')">Remove</button></td></tr><tr><td><span class="ticker">VUG</span></td><td>Vanguard Growth ETF</td><td>Equitable Fred</td><td class="right mono">104.290</td><td class="right mono">$51.98</td><td class="right mono"><b>$84.34</b></td><td class="right mono"><b>$8,796</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Fred|VUG')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Fred|VUG')">Remove</button></td></tr><tr><td><span class="ticker">WMT</span></td><td>Walmart Inc.</td><td>Equitable Fred</td><td class="right mono">11.240</td><td class="right mono">$93.87</td><td class="right mono"><b>$115.15</b></td><td class="right mono"><b>$1,294</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Equitable Fred|WMT')">Edit</button> <button class="btn red" onclick="deleteHolding('Equitable Fred|WMT')">Remove</button></td></tr><tr><td><span class="ticker">MRVL</span></td><td>Marvell Technology Inc.</td><td>Fidelity</td><td class="right mono">13.405</td><td class="right mono">$247.56</td><td class="right mono"><b>$259.70</b></td><td class="right mono"><b>$3,481</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Fidelity|MRVL')">Edit</button> <button class="btn red" onclick="deleteHolding('Fidelity|MRVL')">Remove</button></td></tr><tr><td><span class="ticker">MU</span></td><td>Micron Technology Inc.</td><td>Fidelity</td><td class="right mono">3.807</td><td class="right mono">$1,050.46</td><td class="right mono"><b>$1,062.39</b></td><td class="right mono"><b>$4,045</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Fidelity|MU')">Edit</button> <button class="btn red" onclick="deleteHolding('Fidelity|MU')">Remove</button></td></tr><tr><td><span class="ticker">SPCX</span></td><td>SPACE</td><td>Fidelity</td><td class="right mono">26.000</td><td class="right mono">$167.93</td><td class="right mono"><b>$155.50</b></td><td class="right mono"><b>$4,043</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Fidelity|SPCX')">Edit</button> <button class="btn red" onclick="deleteHolding('Fidelity|SPCX')">Remove</button></td></tr><tr><td><span class="ticker">SPCX</span></td><td>SPACE</td><td>Fidelity</td><td class="right mono">4.902</td><td class="right mono">$203.99</td><td class="right mono"><b>$155.50</b></td><td class="right mono"><b>$762</b></td><td><span class="badge live">Finnhub live</span></td><td><button class="btn" onclick="editHolding('Fidelity|SPCX')">Edit</button> <button class="btn red" onclick="deleteHolding('Fidelity|SPCX')">Remove</button></td></tr></tbody></table></div></div></section>
+<section id="settings" class="tab"><section id="apiPanel" class="notice"><b>🔑 Current Price Refresh Setup</b><div class="muted">Paste your Finnhub key once per browser. The key is stored only in your browser localStorage, not inside exported portfolio data.</div><div class="apirow"><input id="apiKeyInput" placeholder="Paste Finnhub API key here" autocomplete="off"><button class="btn orange" id="saveKeyBtn">Save Key</button><button class="btn primary" id="testKeyBtn">Test TSLA</button><button class="btn red" id="clearKeyBtn">Clear Key</button><span id="keyStatus" class="mono muted">Saved key ending vae0</span></div></section><div class="card"><h3>System status</h3><div id="diagnostics" class="summaryList"><div class="sumrow"><b>Data version</b><span></span><span class="mono">2026-06-05-stable-pro-v3-live-visible</span></div><div class="sumrow"><b>API key</b><span></span><span class="mono">Saved ending vae0</span></div><div class="sumrow"><b>Live quotes loaded</b><span></span><span class="mono">16</span></div><div class="sumrow"><b>Storage</b><span></span><span class="mono">Versioned; old files cannot override this build</span></div><div class="sumrow"><b>URL mode</b><span></span><span class="mono">https:</span></div></div></div></section>
 </main>
 <script>
 const DATA_VERSION = "2026-06-05-stable-pro-v3-live-visible";
@@ -324,7 +323,7 @@ const INITIAL_HOLDINGS = [
   {
     "ticker": "AAPL",
     "name": "Apple Inc.",
-    "qty": 61.0,
+    "qty": 61,
     "cost": 101.2967,
     "costBasis": 6179,
     "snapshotPrice": 311.23,
@@ -342,7 +341,7 @@ const INITIAL_HOLDINGS = [
   {
     "ticker": "AMZN",
     "name": "Amazon.com Inc.",
-    "qty": 145.0,
+    "qty": 145,
     "cost": 137.7152,
     "costBasis": 19968.71,
     "snapshotPrice": 253.79,
@@ -414,7 +413,7 @@ const INITIAL_HOLDINGS = [
   {
     "ticker": "MRVL",
     "name": "Marvell Technology Inc.",
-    "qty": 206.0,
+    "qty": 206,
     "cost": 159.105,
     "costBasis": 32775.63,
     "snapshotPrice": 316.43,
@@ -432,19 +431,19 @@ const INITIAL_HOLDINGS = [
   {
     "ticker": "MU",
     "name": "Micron Technology Inc.",
-    "qty": 52.0,
+    "qty": 52,
     "cost": 455.6875,
     "costBasis": 23695.75,
-    "snapshotPrice": 996.0,
-    "value": 51792.0,
+    "snapshotPrice": 996,
+    "value": 51792,
     "gl": 28096.25,
     "glPct": 118.57,
     "alloc": 0.1184,
     "sector": "Technology",
     "account": "Equitable Fred",
     "id": "Equitable Fred|MU",
-    "brokerPrice": 996.0,
-    "brokerValue": 51792.0,
+    "brokerPrice": 996,
+    "brokerValue": 51792,
     "priceAsOf": "04:00 PM ET"
   },
   {
@@ -468,11 +467,11 @@ const INITIAL_HOLDINGS = [
   {
     "ticker": "PHYS",
     "name": "Sprott Physical Gold Trust",
-    "qty": 200.0,
+    "qty": 200,
     "cost": 25.0053,
     "costBasis": 5001.08,
     "snapshotPrice": 33.81,
-    "value": 6762.0,
+    "value": 6762,
     "gl": 1760.92,
     "glPct": 35.21,
     "alloc": 0.0144,
@@ -480,13 +479,13 @@ const INITIAL_HOLDINGS = [
     "account": "Equitable Fred",
     "id": "Equitable Fred|PHYS",
     "brokerPrice": 33.81,
-    "brokerValue": 6762.0,
+    "brokerValue": 6762,
     "priceAsOf": "04:00 PM ET"
   },
   {
     "ticker": "TSLA",
     "name": "Tesla Inc.",
-    "qty": 356.0,
+    "qty": 356,
     "cost": 104.8021,
     "costBasis": 37309.55,
     "snapshotPrice": 418.45,
@@ -664,65 +663,62 @@ const INITIAL_HOLDINGS = [
     "priceAsOf": "Prior snapshot"
   },
   {
-    "ticker": "SPY",
-    "name": "SPDR S&P 500 ETF",
-    "qty": 5.398,
-    "cost": 673.05,
-    "costBasis": 3633.13,
-    "snapshotPrice": 755.01,
-    "value": 4075.54,
-    "gl": 442.41,
-    "glPct": 12.17,
-    "alloc": 0.0087,
-    "sector": "ETF",
-    "account": "Fidelity",
-    "id": "Fidelity|SPY",
-    "brokerPrice": 755.01,
-    "brokerValue": 4075.54,
-    "priceAsOf": "Prior snapshot"
-  },
-  {
-    "ticker": "MRVL",
-    "name": "Marvell Technology Inc.",
-    "qty": 21,
-    "cost": 297.95,
-    "costBasis": 6256.95,
-    "snapshotPrice": 302.51,
-    "value": 6352.71,
-    "gl": 95.76,
-    "glPct": 1.53,
-    "alloc": 0.0136,
-    "sector": "Technology",
-    "account": "Robinhood",
-    "id": "Robinhood|MRVL",
-    "brokerPrice": 302.51,
-    "brokerValue": 6352.71,
-    "priceAsOf": "Prior snapshot"
-  },
-  {
+    "id": "Equitable Fred|RKLB",
     "ticker": "RKLB",
     "name": "Rocket",
-    "qty": 210.0,
-    "cost": 121.2,
-    "costBasis": 25452,
+    "qty": 210,
+    "cost": 118.22,
+    "costBasis": 24826.2,
+    "brokerPrice": 119.95,
     "snapshotPrice": 119.95,
+    "brokerValue": 25189.5,
     "value": 25189.5,
-    "gl": -262.5,
-    "glPct": -1.03,
-    "alloc": 0.05,
+    "gl": 363.2999999999993,
+    "glPct": 1.4633733716799222,
     "sector": "Technology",
     "account": "Equitable Fred",
-    "id": "Equitable Fred|RKLB",
-    "brokerPrice": 119.95,
-    "brokerValue": 25189.5,
-    "priceAsOf": "04:00 PM ET"
+    "priceAsOf": "Manual current price input"
+  },
+  {
+    "id": "Fidelity|SPCX",
+    "ticker": "SPCX",
+    "name": "SPACE",
+    "qty": 26,
+    "cost": 167.93,
+    "costBasis": 4366.18,
+    "brokerPrice": 167.93,
+    "snapshotPrice": 167.93,
+    "brokerValue": 4366.18,
+    "value": 4366.18,
+    "gl": 0,
+    "glPct": 0,
+    "sector": "Technology",
+    "account": "Fidelity",
+    "priceAsOf": "Manual current price input"
+  },
+  {
+    "id": "Fidelity|SPCX",
+    "ticker": "SPCX",
+    "name": "SPACE",
+    "qty": 4.902201,
+    "cost": 203.99,
+    "costBasis": 999.99998199,
+    "brokerPrice": 204.08,
+    "snapshotPrice": 204.08,
+    "brokerValue": 1000.44118008,
+    "value": 1000.44118008,
+    "gl": 0.4411980899999435,
+    "glPct": 0.044119809794599445,
+    "sector": "Technology",
+    "account": "Fidelity",
+    "priceAsOf": "Saved using live price"
   }
 ];
 const INITIAL_CASH = {
   "Equitable Fred": 1444.81,
   "Equitable Anahita": 792.26,
   "Fidelity": 390.05,
-  "Robinhood": 0.0
+  "Robinhood": 0
 };
 const FUNDAMENTALS = {
   "AAPL": {
@@ -825,7 +821,7 @@ const FUNDAMENTALS = {
     "dayChangePct": null
   },
   "WMT": {
-    "h52": 105.0,
+    "h52": 105,
     "l52": 58.38,
     "pe": 35.1,
     "beta": 0.56,
@@ -855,7 +851,7 @@ const FUNDAMENTALS = {
     "h52": 755.01,
     "l52": 480.05,
     "pe": null,
-    "beta": 1.0,
+    "beta": 1,
     "divYield": "1.25",
     "dayChange": null,
     "dayChangePct": null
