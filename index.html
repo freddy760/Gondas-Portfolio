@@ -313,9 +313,9 @@
     <div class="miniNote">Loss positions are sorted by loss severity first.</div>
   </div>
 </section>
-<section id="holdings" class="tab"><div class="toolbar"><input id="searchBox" placeholder="Search ticker, company, or account"><select id="accountFilter"><option value="">All accounts</option></select><select id="modeFilter"><option value="all">All holdings</option><option value="gain">Gainers</option><option value="loss">Losers</option><option value="variance">Live refreshed only</option></select><button class="btn" id="exportCsvBtn">Export CSV</button></div><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Company</th><th>Account</th><th>Shares</th><th>Avg Cost</th><th>Current Price</th><th>Current Value</th><th>Price Source</th><th>Gain/Loss</th><th>G/L %</th><th>As Of</th></tr></thead><tbody id="holdingsBody"></tbody></table></div></section>
+<section id="holdings" class="tab"><div class="toolbar"><input id="searchBox" placeholder="Search ticker, company, or account"><select id="accountFilter"><option value="">All accounts</option></select><select id="modeFilter"><option value="all">All holdings</option><option value="gain">Gainers</option><option value="loss">Losers</option><option value="variance">Live refreshed only</option></select><button class="btn" id="exportCsvBtn">Export CSV</button></div><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Company</th><th>Account</th><th>Shares</th><th>Avg Cost</th><th>Current Price</th><th>Current Value</th><th>Price Source</th><th>Gain/Loss</th><th>G/L %</th><th>As Of</th><th>Purchase Date</th><th>Capital Gain Term</th></tr></thead><tbody id="holdingsBody"></tbody></table></div><p class="muted">Holding term as of today for ordinary U.S. stock purchases: short-term is one year or less; long-term is more than one year. Gains/losses remain unrealized until sold. Dates extracted from activity are recorded purchases, not verified remaining tax lots. Sales, splits, and reinvestments may affect current lots; the term shown applies to the recorded dates. Enter dates in Edit Portfolio. <a href="https://www.irs.gov/taxtopics/tc409" target="_blank" rel="noopener">IRS holding-period rules</a>.</p></section>
 <section id="analysis" class="tab"><div class="card"><h3>Current holdings analysis</h3><p class="muted">Educational view only; not financial advice. It filters automatically to tickers you currently hold.</p><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Current Value</th><th>Allocation</th><th>Risk</th><th>Action</th><th>Plain-English reason</th></tr></thead><tbody id="analysisBody"></tbody></table></div></div></section>
-<section id="editor" class="tab"><div class="card editor"><h3 id="editorTitle">Add / edit holding</h3><p class="muted" style="margin-top:4px">Current price is optional — leave it blank and Refresh Live will update it from Finnhub.</p><div class="editorGrid"><input id="eTicker" placeholder="Ticker"><input id="eName" placeholder="Company"><input id="eQty" type="number" step="any" placeholder="Shares"><input id="eCost" type="number" step="any" placeholder="Avg cost"><input id="eBrokerPrice" type="number" step="any" placeholder="Current price (optional)"><select id="eSector"><option>Technology</option><option>Consumer Discretionary</option><option>Consumer Staples</option><option>Communication Services</option><option>Financials</option><option>Healthcare</option><option>Industrials</option><option>Materials</option><option>Energy</option><option>Utilities</option><option>ETF</option><option>Commodities</option></select><select id="eAccount"></select></div><div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" id="saveHoldingBtn">Save Holding</button><button class="btn" id="clearFormBtn">Clear</button><button class="btn green" id="exportHtmlBtn">Export Updated index.html</button><button class="btn red" id="resetEditsBtn">Reset Browser Edits</button><span id="editMsg" class="muted"></span></div></div><div class="card" style="margin-top:18px"><h3>Current positions by account</h3><p class="muted">Current Price and Current Value are the main portfolio view. After Refresh Live, Finnhub prices are shown where available; otherwise the saved current price is used as fallback.</p><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Company</th><th>Account</th><th>Shares</th><th>Avg Cost</th><th>Current Price</th><th>Current Value</th><th>Price Source</th><th>Actions</th></tr></thead><tbody id="editorBody"></tbody></table></div></div></section>
+<section id="editor" class="tab"><div class="card editor"><h3 id="editorTitle">Add / edit holding</h3><p class="muted" style="margin-top:4px">Current price is optional — leave it blank and Refresh Live will update it from Finnhub.</p><div class="editorGrid"><input id="eTicker" placeholder="Ticker"><input id="eName" placeholder="Company"><input id="eQty" type="number" step="any" placeholder="Shares"><input id="eCost" type="number" step="any" placeholder="Avg cost"><input id="eBrokerPrice" type="number" step="any" placeholder="Current price (optional)"><label>Purchase date(s)<textarea id="ePurchaseDate" placeholder="YYYY-MM-DD, one date per line" rows="3"></textarea></label><label>Purchase history<select id="ePurchaseHistory"><option value="single">Known purchase date(s) / unknown</option><option value="multiple">Multiple dates not yet entered</option></select></label><select id="eSector"><option>Technology</option><option>Consumer Discretionary</option><option>Consumer Staples</option><option>Communication Services</option><option>Financials</option><option>Healthcare</option><option>Industrials</option><option>Materials</option><option>Energy</option><option>Utilities</option><option>ETF</option><option>Commodities</option></select><select id="eAccount"></select></div><div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" id="saveHoldingBtn">Save Holding</button><button class="btn" id="clearFormBtn">Clear</button><button class="btn green" id="exportHtmlBtn">Export Updated index.html</button><button class="btn red" id="resetEditsBtn">Reset Browser Edits</button><span id="editMsg" class="muted"></span></div></div><div class="card" style="margin-top:18px"><h3>Current positions by account</h3><p class="muted">Current Price and Current Value are the main portfolio view. After Refresh Live, Finnhub prices are shown where available; otherwise the saved current price is used as fallback.</p><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Company</th><th>Account</th><th>Shares</th><th>Avg Cost</th><th>Current Price</th><th>Current Value</th><th>Price Source</th><th>Actions</th></tr></thead><tbody id="editorBody"></tbody></table></div></div></section>
 <section id="settings" class="tab"><section id="apiPanel" class="notice"><b>🔑 Current Price Refresh Setup</b><div class="muted">Paste your Finnhub key once per browser. The key is stored only in your browser localStorage, not inside exported portfolio data.</div><div class="apirow"><input id="apiKeyInput" placeholder="Paste Finnhub API key here" autocomplete="off"><button class="btn orange" id="saveKeyBtn">Save Key</button><button class="btn primary" id="testKeyBtn">Test TSLA</button><button class="btn red" id="clearKeyBtn">Clear Key</button><span id="keyStatus" class="mono muted">No private key saved</span></div></section><div class="card"><h3>System status</h3><div id="diagnostics" class="summaryList"></div></div></section>
 </main>
 <script>
@@ -355,7 +355,18 @@ const INITIAL_HOLDINGS = [
     "id": "Equitable Fred|AMZN",
     "brokerPrice": 255.76,
     "brokerValue": 37085.2,
-    "priceAsOf": "Sep 11, 2026 11:51 AM ET"
+    "priceAsOf": "Sep 11, 2026 11:51 AM ET",
+    "purchaseDates": [
+      "2023-07-20",
+      "2023-08-28",
+      "2023-10-03",
+      "2023-10-13",
+      "2023-12-21",
+      "2023-12-29"
+    ],
+    "purchaseDate": "",
+    "purchaseHistory": "single",
+    "purchaseDateSource": "Screenshots: recorded purchases; remaining tax lots not verified"
   },
   {
     "ticker": "GE",
@@ -373,7 +384,13 @@ const INITIAL_HOLDINGS = [
     "id": "Equitable Fred|GE",
     "brokerPrice": 323.97,
     "brokerValue": 5870.6604,
-    "priceAsOf": "Sep 11, 2026 11:51 AM ET"
+    "priceAsOf": "Sep 11, 2026 11:51 AM ET",
+    "purchaseDates": [
+      "2025-05-20"
+    ],
+    "purchaseDate": "2025-05-20",
+    "purchaseHistory": "single",
+    "purchaseDateSource": "Screenshots: recorded purchases; remaining tax lots not verified"
   },
   {
     "ticker": "GOOGL",
@@ -427,7 +444,14 @@ const INITIAL_HOLDINGS = [
     "id": "Equitable Fred|MRVL",
     "brokerPrice": 237.6701,
     "brokerValue": 48976.4398,
-    "priceAsOf": "Sep 11, 2026 11:51 AM ET"
+    "priceAsOf": "Sep 11, 2026 11:51 AM ET",
+    "purchaseDates": [
+      "2026-05-07",
+      "2026-06-04"
+    ],
+    "purchaseDate": "",
+    "purchaseHistory": "single",
+    "purchaseDateSource": "Screenshots: recorded purchases; remaining tax lots not verified"
   },
   {
     "ticker": "MU",
@@ -445,7 +469,13 @@ const INITIAL_HOLDINGS = [
     "id": "Equitable Fred|MU",
     "brokerPrice": 981.805,
     "brokerValue": 51061.7144,
-    "priceAsOf": "Sep 11, 2026 11:51 AM ET"
+    "priceAsOf": "Sep 11, 2026 11:51 AM ET",
+    "purchaseDates": [
+      "2026-04-17"
+    ],
+    "purchaseDate": "2026-04-17",
+    "purchaseHistory": "single",
+    "purchaseDateSource": "Screenshots: recorded purchases; remaining tax lots not verified"
   },
   {
     "ticker": "NVDA",
@@ -463,7 +493,13 @@ const INITIAL_HOLDINGS = [
     "id": "Equitable Fred|NVDA",
     "brokerPrice": 219.7399,
     "brokerValue": 17169.8165,
-    "priceAsOf": "Sep 11, 2026 11:51 AM ET"
+    "priceAsOf": "Sep 11, 2026 11:51 AM ET",
+    "purchaseDates": [
+      "2024-06-13"
+    ],
+    "purchaseDate": "2024-06-13",
+    "purchaseHistory": "single",
+    "purchaseDateSource": "Screenshots: recorded purchases; remaining tax lots not verified"
   },
   {
     "ticker": "PHYS",
@@ -472,7 +508,7 @@ const INITIAL_HOLDINGS = [
     "cost": 25.0053,
     "costBasis": 5001.08,
     "snapshotPrice": 33.01,
-    "value": 6602.0,
+    "value": 6602,
     "gl": 1600.92,
     "glPct": 32.0115,
     "alloc": 0.016089,
@@ -480,8 +516,14 @@ const INITIAL_HOLDINGS = [
     "account": "Equitable Fred",
     "id": "Equitable Fred|PHYS",
     "brokerPrice": 33.01,
-    "brokerValue": 6602.0,
-    "priceAsOf": "Sep 11, 2026 11:51 AM ET"
+    "brokerValue": 6602,
+    "priceAsOf": "Sep 11, 2026 11:51 AM ET",
+    "purchaseDates": [
+      "2025-05-20"
+    ],
+    "purchaseDate": "2025-05-20",
+    "purchaseHistory": "single",
+    "purchaseDateSource": "Screenshots: recorded purchases; remaining tax lots not verified"
   },
   {
     "ticker": "TSLA",
@@ -517,7 +559,15 @@ const INITIAL_HOLDINGS = [
     "id": "Equitable Fred|VUG",
     "brokerPrice": 88.3349,
     "brokerValue": 9222.6157,
-    "priceAsOf": "Sep 11, 2026 11:51 AM ET"
+    "priceAsOf": "Sep 11, 2026 11:51 AM ET",
+    "purchaseDates": [
+      "2023-11-07",
+      "2023-12-21",
+      "2023-12-29"
+    ],
+    "purchaseDate": "",
+    "purchaseHistory": "single",
+    "purchaseDateSource": "Screenshots: recorded purchases; remaining tax lots not verified"
   },
   {
     "ticker": "WMT",
@@ -535,7 +585,13 @@ const INITIAL_HOLDINGS = [
     "id": "Equitable Fred|WMT",
     "brokerPrice": 106.155,
     "brokerValue": 1195.6238,
-    "priceAsOf": "Sep 11, 2026 11:51 AM ET"
+    "priceAsOf": "Sep 11, 2026 11:51 AM ET",
+    "purchaseDates": [
+      "2024-12-04"
+    ],
+    "purchaseDate": "2024-12-04",
+    "purchaseHistory": "single",
+    "purchaseDateSource": "Screenshots: recorded purchases; remaining tax lots not verified"
   },
   {
     "ticker": "GE",
@@ -553,7 +609,13 @@ const INITIAL_HOLDINGS = [
     "id": "Equitable Anahita|GE",
     "brokerPrice": 324.33,
     "brokerValue": 5543.124,
-    "priceAsOf": "Sep 11, 2026 12:28 PM ET"
+    "priceAsOf": "Sep 11, 2026 12:28 PM ET",
+    "purchaseDates": [
+      "2025-08-04"
+    ],
+    "purchaseDate": "2025-08-04",
+    "purchaseHistory": "single",
+    "purchaseDateSource": "Screenshots: recorded purchases; remaining tax lots not verified"
   },
   {
     "ticker": "MP",
@@ -571,7 +633,13 @@ const INITIAL_HOLDINGS = [
     "id": "Equitable Anahita|MP",
     "brokerPrice": 51.33,
     "brokerValue": 3593.1,
-    "priceAsOf": "Sep 11, 2026 12:28 PM ET"
+    "priceAsOf": "Sep 11, 2026 12:28 PM ET",
+    "purchaseDates": [
+      "2025-08-04"
+    ],
+    "purchaseDate": "2025-08-04",
+    "purchaseHistory": "single",
+    "purchaseDateSource": "Screenshots: recorded purchases; remaining tax lots not verified"
   },
   {
     "ticker": "MU",
@@ -607,7 +675,13 @@ const INITIAL_HOLDINGS = [
     "id": "Equitable Anahita|NVDA",
     "brokerPrice": 219.29,
     "brokerValue": 5489.9252,
-    "priceAsOf": "Sep 11, 2026 12:28 PM ET"
+    "priceAsOf": "Sep 11, 2026 12:28 PM ET",
+    "purchaseDates": [
+      "2025-08-04"
+    ],
+    "purchaseDate": "2025-08-04",
+    "purchaseHistory": "single",
+    "purchaseDateSource": "Screenshots: recorded purchases; remaining tax lots not verified"
   },
   {
     "ticker": "OKLO",
@@ -625,7 +699,13 @@ const INITIAL_HOLDINGS = [
     "id": "Equitable Anahita|OKLO",
     "brokerPrice": 36.9255,
     "brokerValue": 2215.53,
-    "priceAsOf": "Sep 11, 2026 12:28 PM ET"
+    "priceAsOf": "Sep 11, 2026 12:28 PM ET",
+    "purchaseDates": [
+      "2025-08-04"
+    ],
+    "purchaseDate": "2025-08-04",
+    "purchaseHistory": "single",
+    "purchaseDateSource": "Screenshots: recorded purchases; remaining tax lots not verified"
   },
   {
     "ticker": "MRVL",
@@ -686,7 +766,7 @@ const INITIAL_HOLDINGS = [
     "name": "SpaceX",
     "qty": 17.664941,
     "cost": 181.15,
-    "costBasis": 3200.0,
+    "costBasis": 3200,
     "snapshotPrice": 148.9,
     "value": 2630.22,
     "gl": -569.78,
@@ -715,7 +795,13 @@ const INITIAL_HOLDINGS = [
     "id": "Equitable Fred|RKLB",
     "brokerPrice": 63.28,
     "brokerValue": 13288.8,
-    "priceAsOf": "Sep 11, 2026 11:51 AM ET"
+    "priceAsOf": "Sep 11, 2026 11:51 AM ET",
+    "purchaseDates": [
+      "2026-06-04"
+    ],
+    "purchaseDate": "2026-06-04",
+    "purchaseHistory": "single",
+    "purchaseDateSource": "Screenshots: recorded purchases; remaining tax lots not verified"
   }
 ];
 const INITIAL_CASH = {
@@ -963,6 +1049,11 @@ const LS_KEY = `gonda_portfolio_holdings_${DATA_VERSION}`;
 const LS_CASH_KEY = `gonda_portfolio_cash_${DATA_VERSION}`;
 const API_KEY_STORAGE = 'gonda_finnhub_private_key_v2';
 let holdings = loadJSON(LS_KEY, INITIAL_HOLDINGS);
+holdings=holdings.map(h=>{
+  if(h.purchaseDate || h.purchaseDates?.length || h.purchaseHistory==='multiple') return h;
+  const source=INITIAL_HOLDINGS.find(x=>x.account===h.account&&x.ticker===h.ticker);
+  return source?.purchaseDates?.length?{...h,purchaseDates:source.purchaseDates,purchaseDate:source.purchaseDate,purchaseDateSource:source.purchaseDateSource}:h;
+});
 let cash = loadJSON(LS_CASH_KEY, INITIAL_CASH);
 let liveData = {};
 let editingId = null;
@@ -996,6 +1087,25 @@ function renderKPIs(){ const t=portfolioTotals(); const byTicker={}; holdings.fo
 function renderValueChart(t){ const ctx=$('valueChart'); if(!ctx || typeof Chart==='undefined') return; if(valueChart) valueChart.destroy(); valueChart = new Chart(ctx,{type:'bar',data:{labels:['Cost','Current Value','Live Value','Cash'],datasets:[{label:'USD',data:[t.cost,t.live-t.cash,t.live-t.cash,t.cash]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>money(v)}}}}}); }
 function filteredHoldings(){ const q=$('searchBox')?.value.toLowerCase().trim()||''; const acc=$('accountFilter')?.value||''; const mode=$('modeFilter')?.value||'all'; return holdings.filter(h=>{ const matches=!q||[h.ticker,h.name,h.account,h.sector].some(x=>String(x||'').toLowerCase().includes(q)); const a=!acc||h.account===acc; const g=gain(h); const lv=liveValue(h); const diff=lv==null?0:Math.abs(lv-brokerValue(h)); const m= mode==='all'||(mode==='gain'&&g>=0)||(mode==='loss'&&g<0)||(mode==='variance'&&diff>5); return matches&&a&&m; }); }
 function populateFilters(){ const af=$('accountFilter'), ea=$('eAccount'); const opts=['<option value="">All accounts</option>',...accounts().map(a=>`<option>${a}</option>`)].join(''); if(af && af.innerHTML!==opts) af.innerHTML=opts; const eopts=accounts().map(a=>`<option>${a}</option>`).join(''); if(ea && ea.innerHTML!==eopts) ea.innerHTML=eopts; }
+function validPurchaseDate(value){
+  if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const d=new Date(value+'T00:00:00Z');
+  return Number.isFinite(d.getTime()) && d.toISOString().slice(0,10)===value;
+}
+function localDateString(now=new Date()){
+  return now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+}
+function knownPurchaseDates(h){ return [...new Set((Array.isArray(h.purchaseDates)?h.purchaseDates:[h.purchaseDate]).filter(validPurchaseDate))].sort(); }
+function purchaseDateLabel(h){ const dates=knownPurchaseDates(h); return dates.length?dates.join(', '):h.purchaseHistory==='multiple'?'Multiple dates':'Not provided'; }
+function capitalGainTerm(h, today=localDateString()){
+  if(h.purchaseHistory==='multiple') return 'Tax-lot details needed';
+  const dates=knownPurchaseDates(h);
+  if(!dates.length) return 'Unknown';
+  if(dates.some(d=>d>today)) return 'Invalid future date';
+  const terms=dates.map(d=>today>(String(Number(d.slice(0,4))+1)+d.slice(4))?'Long-term':'Short-term');
+  const term=new Set(terms).size>1?'Mixed short/long-term':terms[0];
+  return term+(h.purchaseDateSource?' (recorded purchases)':'');
+}
 function renderHoldings(){
   const rows=filteredHoldings();
   const totalPortfolio=portfolioTotals().total || 1;
@@ -1004,19 +1114,19 @@ function renderHoldings(){
   Object.keys(grouped).sort().forEach(acc=>{
     const arr=grouped[acc].sort((a,b)=>a.ticker.localeCompare(b.ticker));
     let sub={cost:0,value:0,gain:0};
-    html+=`<tr class="accountHead"><td colspan="11">${acc} — ${arr.length} positions</td></tr>`;
+    html+=`<tr class="accountHead"><td colspan="13">${acc} — ${arr.length} positions</td></tr>`;
     arr.forEach(h=>{
       const mp=marketPrice(h), mv=marketValue(h), g=gain(h), gp=gainPct(h);
       const source = liveData[h.ticker]?.price ? 'Finnhub live' : 'Snapshot';
       sub.cost+=costBasis(h); sub.value+=mv; sub.gain+=g;
-      html+=`<tr><td><span class="ticker">${h.ticker}</span></td><td>${h.name||''}</td><td><span class="${accountClass(h.account)}">${h.account}</span></td><td class="right mono">${num(h.qty,3)}</td><td class="right mono">${money(h.cost,2)}</td><td class="right mono"><b>${money(mp,2)}</b></td><td class="right mono"><b>${money(mv,0)}</b></td><td><span class="badge ${source==='Finnhub live'?'live':'warn'}">${source}</span></td><td class="right mono ${g>=0?'greenTxt':'redTxt'}"><b>${money(g,0)}</b></td><td class="right mono ${gp>=0?'greenTxt':'redTxt'}"><b>${pct(gp)}</b></td><td class="mono muted">${source==='Finnhub live'?new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):(h.priceAsOf||'Snapshot')}</td></tr>`;
+      html+=`<tr><td><span class="ticker">${h.ticker}</span></td><td>${h.name||''}</td><td><span class="${accountClass(h.account)}">${h.account}</span></td><td class="right mono">${num(h.qty,3)}</td><td class="right mono">${money(h.cost,2)}</td><td class="right mono"><b>${money(mp,2)}</b></td><td class="right mono"><b>${money(mv,0)}</b></td><td><span class="badge ${source==='Finnhub live'?'live':'warn'}">${source}</span></td><td class="right mono ${g>=0?'greenTxt':'redTxt'}"><b>${money(g,0)}</b></td><td class="right mono ${gp>=0?'greenTxt':'redTxt'}"><b>${pct(gp)}</b></td><td class="mono muted">${source==='Finnhub live'?new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):(h.priceAsOf||'Snapshot')}</td><td class="mono">${purchaseDateLabel(h)}</td><td><span class="badge">${capitalGainTerm(h)}</span></td></tr>`;
     });
     const c=Number(cash[acc]||0);
-    if(c) html+=`<tr class="cash"><td colspan="6">Cash / money market</td><td class="right mono"><b>${money(c,2)}</b></td><td colspan="4"></td></tr>`;
+    if(c) html+=`<tr class="cash"><td colspan="6">Cash / money market</td><td class="right mono"><b>${money(c,2)}</b></td><td colspan="6"></td></tr>`;
     grand.cost+=sub.cost; grand.value+=sub.value+c; grand.gain+=sub.gain;
-    html+=`<tr class="subtotal"><td colspan="4">${acc} subtotal</td><td class="right mono">${money(sub.cost)}</td><td></td><td class="right mono">${money(sub.value+c)}</td><td></td><td class="right mono ${sub.gain>=0?'greenTxt':'redTxt'}">${money(sub.gain)}</td><td class="right mono">${((sub.value+c)/totalPortfolio*100).toFixed(1)}%</td><td></td></tr>`;
+    html+=`<tr class="subtotal"><td colspan="4">${acc} subtotal</td><td class="right mono">${money(sub.cost)}</td><td></td><td class="right mono">${money(sub.value+c)}</td><td></td><td class="right mono ${sub.gain>=0?'greenTxt':'redTxt'}">${money(sub.gain)}</td><td class="right mono">${((sub.value+c)/totalPortfolio*100).toFixed(1)}%</td><td></td><td></td><td></td></tr>`;
   });
-  html+=`<tr class="grand"><td colspan="4">GRAND TOTAL</td><td class="right mono">${money(grand.cost)}</td><td></td><td class="right mono">${money(grand.value)}</td><td></td><td class="right mono ${grand.gain>=0?'greenTxt':'redTxt'}">${money(grand.gain)}</td><td class="right mono">100.0%</td><td></td></tr>`;
+  html+=`<tr class="grand"><td colspan="4">GRAND TOTAL</td><td class="right mono">${money(grand.cost)}</td><td></td><td class="right mono">${money(grand.value)}</td><td></td><td class="right mono ${grand.gain>=0?'greenTxt':'redTxt'}">${money(grand.gain)}</td><td class="right mono">100.0%</td><td></td><td></td><td></td></tr>`;
   $('holdingsBody').innerHTML=html;
 }
 function consolidatedTickers(){
@@ -1059,8 +1169,8 @@ function renderBreakdowns(){
 }
 function renderAnalysis(){ const t=portfolioTotals(); const vals={}; holdings.forEach(h=>vals[h.ticker]=(vals[h.ticker]||0)+marketValue(h)); $('analysisBody').innerHTML=Object.entries(vals).sort((a,b)=>b[1]-a[1]).map(([tk,v])=>{ const r=ANALYSIS_RULES[tk]||['Review','Medium','No rule yet; review manually.']; return `<tr><td><span class="ticker">${tk}</span></td><td class="right mono">${money(v)}</td><td class="right mono">${(v/t.total*100).toFixed(1)}%</td><td><span class="badge warn">${r[1]}</span></td><td><b>${r[0]}</b></td><td>${r[2]}</td></tr>`; }).join(''); }
 function renderEditor(){ $('editorBody').innerHTML=holdings.slice().sort((a,b)=>a.account.localeCompare(b.account)||a.ticker.localeCompare(b.ticker)).map(h=>{ const mp=marketPrice(h), mv=marketValue(h); const src=liveData[h.ticker]?.price?'Finnhub live':'Saved price'; return `<tr><td><span class="ticker">${h.ticker}</span></td><td>${h.name}</td><td>${h.account}</td><td class="right mono">${num(h.qty,3)}</td><td class="right mono">${money(h.cost,2)}</td><td class="right mono"><b>${money(mp,2)}</b></td><td class="right mono"><b>${money(mv)}</b></td><td><span class="badge ${src==='Finnhub live'?'live':'warn'}">${src}</span></td><td><button class="btn" onclick="editHolding('${idOf(h).replace(/'/g,"\\'")}')">Edit</button> <button class="btn red" onclick="deleteHolding('${idOf(h).replace(/'/g,"\\'")}')">Remove</button></td></tr>`; }).join(''); }
-function editHolding(id){ const h=holdings.find(x=>idOf(x)===id); if(!h) return; editingId=id; $('eTicker').value=h.ticker; $('eName').value=h.name; $('eQty').value=h.qty; $('eCost').value=h.cost; $('eBrokerPrice').value=brokerPrice(h); $('eSector').value=h.sector; $('eAccount').value=h.account; setTab('editor'); }
-function clearForm(){ editingId=null; ['eTicker','eName','eQty','eCost','eBrokerPrice'].forEach(id=>$(id).value=''); $('editMsg').textContent=''; }
+function editHolding(id){ const h=holdings.find(x=>idOf(x)===id); if(!h) return; editingId=id; $('ePurchaseDate').value=knownPurchaseDates(h).join('\n'); $('ePurchaseHistory').value=h.purchaseHistory||'single'; $('eTicker').value=h.ticker; $('eName').value=h.name; $('eQty').value=h.qty; $('eCost').value=h.cost; $('eBrokerPrice').value=brokerPrice(h); $('eSector').value=h.sector; $('eAccount').value=h.account; setTab('editor'); }
+function clearForm(){ editingId=null; $('ePurchaseHistory').value='single'; ['eTicker','eName','eQty','eCost','eBrokerPrice','ePurchaseDate'].forEach(id=>$(id).value=''); $('editMsg').textContent=''; }
 function saveHolding(){
   const ticker=$('eTicker').value.trim().toUpperCase();
   const name=$('eName').value.trim()||ticker;
@@ -1081,7 +1191,15 @@ function saveHolding(){
     $('editMsg').style.color='var(--red)';
     return;
   }
-  const obj={
+  const purchaseHistory=$('ePurchaseHistory').value;
+  const purchaseDates=purchaseHistory==='multiple'?[]:$('ePurchaseDate').value.split(/[\s,]+/).filter(Boolean);
+  const purchaseDate=purchaseDates.length===1?purchaseDates[0]:'';
+  if(purchaseDates.some(d=>!validPurchaseDate(d) || d>localDateString())){
+    $('editMsg').textContent='Enter a valid purchase date on or before today.';
+    $('editMsg').style.color='var(--red)'; return;
+  }
+  const previous=holdings.find(h=>idOf(h)===editingId);
+  const obj={purchaseDate,purchaseDates,purchaseHistory,purchaseDateSource:previous?.purchaseDateSource||'',
     id:`${account}|${ticker}`,ticker,name,qty,cost,costBasis:qty*cost,
     brokerPrice:bp,snapshotPrice:bp,brokerValue:qty*bp,value:qty*bp,
     gl:qty*bp-qty*cost,glPct:((bp-cost)/cost*100),sector,account,
@@ -1179,11 +1297,11 @@ async function refreshLive(isAuto=false){
   scheduleAutoRefresh(AUTO_REFRESH_MS);
   if(ok>0 && document.visibilityState==='visible') console.info('Market prices refreshed from Finnhub.');
 }
-function exportCSV(){ const rows=[['Account','Ticker','Name','Shares','Cost','Current Price','Current Value','Gain','Gain %']]; holdings.forEach(h=>rows.push([h.account,h.ticker,h.name,h.qty,h.cost,marketPrice(h),marketValue(h),gain(h),gainPct(h)])); const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n'); download('gonda_portfolio_export.csv',csv,'text/csv'); }
+function exportCSV(){ const rows=[['Account','Ticker','Name','Shares','Cost','Current Price','Current Value','Gain','Gain %','Purchase Date','Capital Gain Term']]; holdings.forEach(h=>rows.push([h.account,h.ticker,h.name,h.qty,h.cost,marketPrice(h),marketValue(h),gain(h),gainPct(h),purchaseDateLabel(h),capitalGainTerm(h)])); const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n'); download('gonda_portfolio_export.csv',csv,'text/csv'); }
 function exportHTML(){ const html=document.documentElement.outerHTML.replace(/const INITIAL_HOLDINGS = [\s\S]*?;\nconst INITIAL_CASH = [\s\S]*?;\nconst FUNDAMENTALS = [\s\S]*?;\nconst ANALYSIS_RULES = [\s\S]*?;\n/,`const INITIAL_HOLDINGS = ${JSON.stringify(holdings,null,2)};\nconst INITIAL_CASH = ${JSON.stringify(cash,null,2)};\nconst FUNDAMENTALS = ${JSON.stringify(FUNDAMENTALS,null,2)};\nconst ANALYSIS_RULES = ${JSON.stringify(ANALYSIS_RULES,null,2)};\n`); download('index.html','<!doctype html>\n'+html,'text/html'); }
 function download(name,content,type){ const blob=new Blob([content],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
 function renderDiagnostics(){ const d=$('diagnostics'); if(!d) return; const k=getApiKey(); d.innerHTML=`<div class="sumrow"><b>Data version</b><span></span><span class="mono">${DATA_VERSION}</span></div><div class="sumrow"><b>API key</b><span></span><span class="mono">${k?'Saved ending '+k.slice(-4):'Not saved'}</span></div><div class="sumrow"><b>Live quotes loaded</b><span></span><span class="mono">${Object.keys(liveData).length}</span></div><div class="sumrow"><b>Storage</b><span></span><span class="mono">Versioned; old files cannot override this build</span></div><div class="sumrow"><b>URL mode</b><span></span><span class="mono">${location.protocol}</span></div>`; }
 $('refreshBtn').addEventListener('click',refreshLive); $('saveKeyBtn').addEventListener('click',()=>{ const k=$('apiKeyInput').value.trim(); if(!k){alert('Paste key first.');return;} localStorage.setItem(API_KEY_STORAGE,k); $('apiKeyInput').value=''; refreshKeyStatus(); setStatus('Finnhub API key saved'); renderDiagnostics(); startAutoRefresh(); }); $('testKeyBtn').addEventListener('click',testKey); $('clearKeyBtn').addEventListener('click',()=>{ localStorage.removeItem(API_KEY_STORAGE); if(autoRefreshTimer) clearTimeout(autoRefreshTimer); nextAutoRefreshAt=null; refreshKeyStatus(); renderDiagnostics(); updateAutoCountdown(); }); $('saveHoldingBtn').addEventListener('click',saveHolding); $('clearFormBtn').addEventListener('click',clearForm); $('resetEditsBtn').addEventListener('click',resetEdits); $('exportCsvBtn').addEventListener('click',exportCSV); $('exportHtmlBtn').addEventListener('click',exportHTML); ['searchBox','accountFilter','modeFilter'].forEach(id=>$(id).addEventListener('input',renderHoldings));
-refreshKeyStatus(); renderAll(); setTab('overview'); setInterval(marketStatus,60000); startAutoRefresh(); document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && getApiKey() && (!nextAutoRefreshAt || nextAutoRefreshAt < Date.now())) scheduleAutoRefresh(3000); });
+refreshKeyStatus(); renderAll(); setTab('overview'); setInterval(()=>{marketStatus();renderHoldings();},60000); startAutoRefresh(); document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && getApiKey() && (!nextAutoRefreshAt || nextAutoRefreshAt < Date.now())) scheduleAutoRefresh(3000); });
 </script>
 </body></html>
