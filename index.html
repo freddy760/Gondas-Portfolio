@@ -1305,3 +1305,4 @@ $('refreshBtn').addEventListener('click',refreshLive); $('saveKeyBtn').addEventL
 refreshKeyStatus(); renderAll(); setTab('overview'); setInterval(()=>{marketStatus();renderHoldings();},60000); startAutoRefresh(); document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && getApiKey() && (!nextAutoRefreshAt || nextAutoRefreshAt < Date.now())) scheduleAutoRefresh(3000); });
 </script>
 </body></html>
+
